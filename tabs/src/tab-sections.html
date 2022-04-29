@@ -1,0 +1,13 @@
+<style>
+	* { box-sizing: border-box; }
+	:host {
+		display: block;
+		border: 1px solid #ededed;
+	}
+	::slotted(:is(section)) {
+		padding: 0.5em 0.75em;
+	}
+	::slotted(:not(section)), ::slotted(:not([data-selected])) {
+		display: none;
+	}
+</style><slot></slot>

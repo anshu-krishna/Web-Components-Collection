@@ -1,0 +1,26 @@
+<style>
+	* { box-sizing: border-box; }
+	:host {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.2em;
+	}
+
+	::slotted(:not(header)) {
+		display: none;
+	}
+
+	::slotted(header) {
+		cursor: pointer;
+		padding: 10px 15px;
+		border: 1px solid #ededed;
+	}
+
+	::slotted(header[data-selected]) {
+		cursor: initial;
+		border-bottom: 2px solid black;
+	}
+	::slotted(header[disabled]) {
+		pointer-events: none;
+	}
+</style><slot></slot>
