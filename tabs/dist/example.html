@@ -2,31 +2,31 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Tabs Test</title>
+	<title>Tabs Example</title>
 	<style>
-		tab-headers {
+		tab-container.custom tab-headers {
 			gap: 1px;
 			border-radius: 0.25em 0.25em 0 0;
 		}
-		tab-headers > header {
+		tab-container.custom tab-headers > header {
 			padding: 10px 25px;
 			border: 1px solid black;
 			background: #212121;
 			color: wheat;
 		}
-		tab-headers > header[data-selected] {
+		tab-container.custom tab-headers > header[data-selected] {
 			background: #000;
 			color: white;
 		}
-		tab-headers > header[disabled] {
+		tab-container.custom tab-headers > header[disabled] {
 			filter: none;
 			background: gray;
 		}
-		tab-sections {
+		tab-container.custom tab-sections {
 			border: 1px solid red;
 			border-radius: 0 0 0.25em 0.25em;
 		}
-		tab-sections > section {
+		tab-container.custom tab-sections > section {
 			padding: 0.5em 0.75em;
 		}
 	</style>
@@ -47,18 +47,15 @@
 		</tab-sections>
 	</tab-container>
 	<hr />
-	<tab-container>
+	<tab-container class="custom">
 		<tab-headers selected="1">
-			<header>One</header>
+			<header disabled>One</header>
 			<header>Two</header>
 			<header>Three</header>
 		</tab-headers>
 		<tab-sections>
 			<section>
-				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, magnam voluptatum eum sed sit deleniti architecto?
-				Possimus vel nam atque quae ipsam tenetur a, reprehenderit, quod asperiores, harum pariatur? Itaque dicta nihil
-				ratione, sapiente magnam sequi assumenda perferendis maiores molestias vel totam. Et explicabo voluptate similique
-				cum aliquam, in ea.
+				Lorem ipsum dolor.
 			</section>
 			<section>
 				Uneasy barton seeing remark happen his has. Am possible offering at contempt mr distance stronger an. Attachment
@@ -83,7 +80,7 @@
 			</section>
 		</tab-sections>
 	</tab-container>
-	<script type="module" src="./tabs.js"></script>
+	<script type="module" src="./tabs.min.js"></script>
 	<script>
 		Array.from(document.querySelectorAll('tab-container')).forEach(tab => {
 			tab.addEventListener('change', ({detail}) => {
