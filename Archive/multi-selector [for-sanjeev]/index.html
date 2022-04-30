@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Multi selector for Sanjeev</title>
+	<script type="module" src="multi-selector.js"></script>
+	<style>
+		#cntr {
+			max-width: 50%;
+			margin: auto;
+			justify-content: center;
+			box-shadow: 0 0 10px black;
+			padding: 1em;
+		}
+		multi-selector {
+			--max-inner-height: 500px;
+		}
+	</style>
+</head>
+<body>
+	<div id="cntr">
+		<multi-selector id="test">
+			<!-- <span slot="label"><strong>Please choose a filter:</strong></span> -->
+			<button id="log">Log Selected</button>
+		</multi-selector>
+	</div>
+
+	
+	<script type="module">
+		let t = document.querySelector('#test');
+		let vals = await fetch('data.json');
+		vals = await vals.json();
+		t.values = vals;
+		document.querySelector('#log').onclick = e => {
+			console.log(t.selected);
+		};
+	</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Multiple-Choice Test</title>
+	<script src="../polyfill/webcomponents-loader.js"></script>
+	<script src="labeled-checkbox/labeled-checkbox.js"></script>
+	<script src="multiple-choice.js"></script>
+	<style>
+		labeled-checkbox {
+			border: 1px solid;
+			padding: 10px 15px;
+			margin: 10px;
+			cursor: pointer;
+		}
+		labeled-checkbox[no-box][checked] {
+			background: black;
+			color: white;
+			border-color: black;
+		}
+	</style>
+</head>
+<body>
+	<multiple-choice>
+		<labeled-checkbox value="1">One</labeled-checkbox>
+		<labeled-checkbox value="2">Two</labeled-checkbox>
+		<labeled-checkbox value="3">Three</labeled-checkbox>
+		<labeled-checkbox value="4">Four</labeled-checkbox>
+		<labeled-checkbox value="5">Five</labeled-checkbox>
+	</multiple-choice>
+	<hr />
+
+	<multiple-choice no-box>
+		<labeled-checkbox value="1">I</labeled-checkbox>
+		<labeled-checkbox value="2">II</labeled-checkbox>
+		<labeled-checkbox value="3">III</labeled-checkbox>
+		<labeled-checkbox value="4">IV</labeled-checkbox>
+		<labeled-checkbox value="5">V</labeled-checkbox>
+	</multiple-choice>
+	<hr />
+
+	<multiple-choice disabled>
+		<labeled-checkbox value="a" checked>A</labeled-checkbox>
+		<labeled-checkbox value="b">B</labeled-checkbox>
+		<labeled-checkbox value="c">C</labeled-checkbox>
+		<labeled-checkbox value="d">D</labeled-checkbox>
+		<labeled-checkbox value="e">E</labeled-checkbox>
+	</multiple-choice>
+	<hr />
+
+	<multiple-choice no-box disabled>
+		<labeled-checkbox value="f" checked>F</labeled-checkbox>
+		<labeled-checkbox value="g">G</labeled-checkbox>
+		<labeled-checkbox value="h">H</labeled-checkbox>
+		<labeled-checkbox value="i">I</labeled-checkbox>
+		<labeled-checkbox value="j" checked>J</labeled-checkbox>
+	</multiple-choice>
+
+	<script>
+		let mcs = document.querySelectorAll("multiple-choice");
+		for(let mc of mcs) {
+			mc.addEventListener("choice-change", e => {
+				console.log(e.target, e.detail);
+			});
+		}
+	</script>
+</body>
+</html>

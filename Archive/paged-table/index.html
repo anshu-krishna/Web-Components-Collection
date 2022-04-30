@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Paged-Table Test</title>
+	<script src="../polyfill/webcomponents-loader.js"></script>
+	<script src="paged-table.js"></script>
+	<style>
+		body {
+			text-align: center;
+		}
+
+		table {
+			border-collapse: collapse;
+			margin: auto;
+		}
+
+		th, td {
+			padding: 10px 50px;
+			border: 1px solid black;
+		}
+		table-page-selector {
+			display: block;
+		}
+		table-page-selector button {
+			cursor: pointer;
+			/*border: 1px solid;*/
+			border: none;
+			background: #fff;
+			color: black;
+			padding: 3px 5px;
+			margin: 2px 4px;
+		}
+		table-page-selector [selected] {
+			/*background: skyblue;*/
+			border-bottom: 1px solid;
+		}
+	</style>
+</head>
+
+<body>
+	<table id="pt" is="paged-table" showpage="1">
+		<thead>
+			<tr><th>Head A</th><th>Head B</th></tr>
+		</thead>
+		<tbody>
+			<tr><th>1</th><td>One</td></tr>
+			<tr><th>2</th><td>Two</td></tr>
+			<tr><th>3</th><td>Three</td></tr>
+			<tr><th>4</th><td>Four</td></tr>
+			<tr><th>5</th><td>Five</td></tr>
+			<tr><th>6</th><td>Six</td></tr>
+			<tr><th>7</th><td>Seven</td></tr>
+			<tr><th>8</th><td>Eight</td></tr>
+			<tr><th>9</th><td>Nine</td></tr>
+			<tr><th>10</th><td>Ten</td></tr>
+			<tr><th>11</th><td>Eleven</td></tr>
+			<tr><th>12</th><td>Twelve</td></tr>
+			<tr><th>13</th><td>Thirteen</td></tr>
+			<tr><th>14</th><td>Fourteen</td></tr>
+			<tr><th>15</th><td>Fifteen</td></tr>
+			<tr><th>16</th><td>Sixteen</td></tr>
+			<tr><th>17</th><td>Seventeen</td></tr>
+			<tr><th>18</th><td>Eighteen</td></tr>
+			<tr><th>19</th><td>Nineteen</td></tr>
+			<tr><th>20</th><td>Twenty</td></tr>
+			<tr><th>21</th><td>Twenty One</td></tr>
+			<tr><th>22</th><td>Twenty Two</td></tr>
+			<tr><th>23</th><td>Twenty Three</td></tr>
+			<tr><th>24</th><td>Twenty Four</td></tr>
+			<tr><th>25</th><td>Twenty Five</td></tr>
+		</tbody>
+	</table>
+	<table-page-selector for="pt"></table-page-selector>
+	<hr />
+	
+	<div>
+		Page selector can be placed anywhere after the table.
+		<table-page-selector for="pt"></table-page-selector>
+	</div>
+	<div>
+		Use CSS to customise which page number to display.
+		Increase the number of pages to see the full effect (For this example set maxRows to 1).
+		<table-page-selector id="customised" for="pt"></table-page-selector>
+		<style>
+			#customised [position^="before"], #customised [position^="after"] {
+				display: none;
+			}
+			#customised [position$="-1"], #customised [position$="-2"] {
+				display: inline-block;
+			}
+			#customised button:first-child, #customised button:last-child {
+				display: inline-block;
+			}
+			#customised button:first-child {
+				margin-right: 15px;
+			}
+			#customised button:last-child {
+				margin-left: 15px;
+			}
+		</style>
+	</div>
+	<hr />
+	<div>Change Table maxRows to:
+		<input type="number" id="test" min="1" />
+		<br />
+		<button id="addr">Add row</button>
+	</div>
+	<script>
+		let pt = document.getElementById("pt");
+		{
+			let t = document.getElementById("test");
+			t.value = pt.maxRows;
+			t.addEventListener("change", () => {
+				pt.maxRows = t.value;
+			});
+		}
+
+		document.getElementById("addr").onclick = () => {
+			let row = document.createElement("tr");
+			row.innerHTML = `<th>Added</th><td>${Math.random()}</td>`;
+			let b = pt.querySelector("tbody");
+			b.appendChild(row);
+		};
+	</script>
+</body>
+
+</html>

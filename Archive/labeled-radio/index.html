@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Labeled-Radio Test</title>
+	<script src="../polyfill/webcomponents-loader.js"></script>
+
+	<link rel="stylesheet" href="labeled-radio-css-polyfill.css" />
+	<script src="labeled-radio.js"></script>
+	<style>
+		labeled-radio {
+			margin: 10px;
+			border-bottom: 1px dashed;
+		}
+		labeled-radio:hover {
+			border-bottom: 1px solid;
+		}
+	</style>
+</head>
+
+<body>
+	<labeled-radio>Test</labeled-radio>
+	<br />
+
+	<labeled-radio group="abc" value="1">One</labeled-radio>
+	<labeled-radio group="abc" value="2">Two</labeled-radio>
+	<labeled-radio group="abc" value="3">Three</labeled-radio>
+	<labeled-radio group="abc" value="4">Four</labeled-radio>
+	<labeled-radio group="abc" value="5">Five</labeled-radio>
+
+	<script>
+		let radios = document.querySelectorAll("labeled-radio");
+		for (let r of radios) {
+			r.addEventListener("change", e => {
+				console.log(e.target, e.detail);
+			});
+		}
+	</script>
+</body>
+
+</html>

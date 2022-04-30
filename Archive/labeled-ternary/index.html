@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Labeled Ternary</title>
+	<script src="labeled-ternary.js"></script>
+</head>
+<body>
+	<style>
+		labeled-ternary {
+			border: 1px solid #bcbcee;
+			margin: 0 10px;
+			padding: 10px 15px;
+			font-size: 1.5em;
+		}
+
+		labeled-ternary[nobox][state="-1"] {
+			background: red;
+			color: white;
+		}
+		labeled-ternary[nobox][state="1"] {
+			background: blue;
+			color: white;
+		}
+		
+		labeled-ternary.named::after, labeled-ternary.named[state="0"]::after {
+			content: 'Maybe';
+			cursor: pointer;
+			font-size: 0.5em;
+		}
+		labeled-ternary.named[state="-1"]::after {
+			content: 'No';
+		}
+		labeled-ternary.named[state="1"]::after {
+			content: 'Yes';
+		}
+	</style>
+	<labeled-ternary state='-1'>Hello</labeled-ternary>
+	
+	<labeled-ternary>
+		Hello <b>World</b>
+	</labeled-ternary>
+
+	<labeled-ternary state='1' value='World'>Hello</labeled-ternary>
+
+	<labeled-ternary>
+		Hello
+		<br />
+		World
+	</labeled-ternary>
+
+	<labeled-ternary nobox>Lorem ipsum</labeled-ternary>
+
+	<labeled-ternary class="named" nobox>Hello</labeled-ternary>
+	<script>
+		let nodes = document.querySelectorAll('labeled-ternary');
+		for (let n of nodes) {
+			n.addEventListener('change', function() {
+				console.log('Changed', this);
+			});
+		}
+		// nodes[0].value;
+		// nodes[0].state;
+	</script>
+</body>
+</html>

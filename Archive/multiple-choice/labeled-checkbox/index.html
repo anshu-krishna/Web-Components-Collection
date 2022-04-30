@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Labeled-Checkbox Test</title>
+	<script src="../../polyfill/webcomponents-loader.js"></script>
+	<script src="labeled-checkbox.js"></script>
+	<link rel="stylesheet" href="labled-checkbox-css-polyfill.css" />
+	<style>
+		labeled-checkbox {
+			cursor: pointer;
+			border: 1px solid;
+			padding: 10px;
+			margin: 20px;
+		}
+
+		#t {
+			color: blue;
+			font-size: 2rem;
+		}
+		labeled-checkbox[no-box][checked] {
+			color: white;
+			background: black;
+			border-color: black;
+		}
+	</style>
+</head>
+
+<body>
+	<labeled-checkbox value="25">Test 1</labeled-checkbox>
+
+	<labeled-checkbox no-box>Test 2</labeled-checkbox>
+	
+	<labeled-checkbox disabled>Test 3</labeled-checkbox>
+
+	<labeled-checkbox>
+		<span slot="yes">YES - </span>
+		<span slot="no">NO - </span>
+		Test 4
+	</labeled-checkbox>
+
+	<labeled-checkbox id="t" value="5">
+		<svg slot="yes" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0v24h24v-24h-24zm10.041 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"/></svg>
+		<svg slot="no" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0v24h24v-24h-24zm16.597 17.954l-4.591-4.55-4.555 4.596-1.405-1.405 4.547-4.592-4.593-4.552 1.405-1.405 4.588 4.543 4.545-4.589 1.416 1.403-4.546 4.587 4.592 4.548-1.403 1.416z"/></svg>
+		Test 5
+	</labeled-checkbox>
+
+	<script>
+		let boxes = document.querySelectorAll("labeled-checkbox");
+		for(let box of boxes) {
+			box.addEventListener("change", e => { console.log("Changed", e.target, e.detail); });
+		}
+	</script>
+</body>
+
+</html>

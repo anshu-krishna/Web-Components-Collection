@@ -1,0 +1,9 @@
+labeled-checkbox {
+	display: inline-block;
+}
+labeled-checkbox[disabled] {
+	/* -webkit-filter: grayscale(100%) brightness(50%);
+	filter: grayscale(100%) brightness(50%); */
+	color: #777;
+	cursor: not-allowed;
+}

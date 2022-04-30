@@ -1,0 +1,8 @@
+labeled-radio {
+	display: inline-block;
+	cursor: pointer;
+}
+labeled-radio[disabled] {
+	color: #777;
+	cursor: not-allowed;
+}

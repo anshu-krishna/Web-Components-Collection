@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Dice</title>
+	<script src="dice-roller.js"></script>
+	<style>
+		body {
+			color: #131313;
+		}
+		dice-roller {
+			font-size: 5rem;
+			box-shadow: 0 0 0.1em;
+		}
+	</style>
+</head>
+<body>
+	<dice-roller></dice-roller>
+	<dice-roller value="5"></dice-roller>
+	<script>
+		let dices = document.querySelectorAll('dice-roller');
+		for(let d of dices) {
+			d.addEventListener('change', () => {
+				console.log(d.value, d);
+			});
+		}
+	</script>
+</body>
+</html>
