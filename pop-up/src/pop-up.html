@@ -5,10 +5,10 @@
 	@keyframes slide-in {
 		0% {
 			visibility: visible;
-			transform: translateX(-101%);
+			transform: translateX(var(--final-translate-value));
 		}
 		1% {
-			transform: translateX(-101%);
+			transform: translateX(var(--final-translate-value));
 			visibility: visible;
 		}
 		100% {
@@ -22,11 +22,11 @@
 			visibility: visible;
 		}
 		99% {
-			transform: translateX(-101%);
+			transform: translateX(var(--final-translate-value));
 			visibility: visible;
 		}
 		100% {
-			transform: translateX(-101%);
+			transform: translateX(var(--final-translate-value));
 			visibility: hidden;
 		}
 	}
@@ -39,13 +39,18 @@
 
 		--delay: 0.1s;
 
-		display: block;
+		--final-translate-value: -101%;
+
+		display: inline-block;
 		background: transparent;
 		z-index: var(--z-index);
 		margin: 0;
 		position: fixed;
 		top: 0;
 		left: 0;
+	}
+	:host([direction="right"]) {
+		--final-translate-value: 101%;
 	}
 	:host([open]) {
 		transform: translateX(0%);
@@ -54,7 +59,7 @@
 	}
 	:host(:not([open])) {
 		visibility: hidden;
-		transform: translateX(-101%);
+		transform: translateX(var(--final-translate-value));
 		animation: slide-out var(--delay) forwards;
 	}
 	#cntr {
