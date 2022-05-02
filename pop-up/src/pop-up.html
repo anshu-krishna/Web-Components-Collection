@@ -2,47 +2,66 @@
 	* {
 		box-sizing: border-box;
 	}
-
+	@keyframes slide-in {
+		0% {
+			visibility: visible;
+			transform: translateX(-101%);
+		}
+		1% {
+			transform: translateX(-101%);
+			visibility: visible;
+		}
+		100% {
+			transform: translateX(0%);
+			visibility: visible;
+		}
+	}
+	@keyframes slide-out {
+		0% {
+			transform: translateX(0%);
+			visibility: visible;
+		}
+		99% {
+			transform: translateX(-101%);
+			visibility: visible;
+		}
+		100% {
+			transform: translateX(-101%);
+			visibility: hidden;
+		}
+	}
 	:host {
 		--z-index: 500;
 
 		--backpanel-backgound: rgba(0, 0, 0, 0.9);
 		--backpanel-padding: 0.75em 1.5em;
+		--content-gap-around: 1em;
 
-		--title-color: #bbb;
-		--title-background: #121212;
-		--title-size: 1.2em;
-		--title-padding: 0.5em 0.75em;
-		--title-font-weight: bold;
-
-		--close-color: wheat;
-		--close-background: transparent;
-		--close-size: 1.1em;
-		--close-padding: 0.5em;
-		--close-border: none;
-		--close-border-radius: 0 0 0 0.5em;
-		--close-hover-color: white;
-		--close-hover-background: rgb(255, 23, 23);
-
-		--content-background: white;
-		--content-color: black;
-		--content-border: none;
-		--content-padding: 0.75em 1em;
+		--delay: 0.1s;
 
 		display: block;
 		background: transparent;
-	}
-
-	#cntr {
-		background: var(--backpanel-backgound);
+		z-index: var(--z-index);
 		margin: 0;
 		position: fixed;
 		top: 0;
 		left: 0;
+	}
+	:host([open]) {
+		transform: translateX(0%);
+		animation: slide-in var(--delay) forwards;
+		visibility: visible;
+	}
+	:host(:not([open])) {
+		visibility: hidden;
+		transform: translateX(-101%);
+		animation: slide-out var(--delay) forwards;
+	}
+	#cntr {
+		background: var(--backpanel-backgound);
 		width: 100vw;
 		height: 100vh;
 		overflow: hidden;
-		padding: var(--backpanel-padding);
 		display: grid;
 		justify-content: center;
 		align-items: center;
@@ -53,79 +72,75 @@
 		grid-template-rows: 1fr;
 		grid-template-columns: 1fr;
 	}
+	#title {
+		display: block;
+		background: #121212;
+		color: #bbb;
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		font-size: 1.1em;
+		font-weight: bold;
+		padding: 0.5em 0.75em;
+		max-height: 10vh;
+		overflow-y: auto;
+		z-index: calc(1 + var(--z-index));
+	}
 	#cntr.notitle #title {
 		display: none;
 	}
 	#btn_close {
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		background: var(--close-background);
-		padding: var(--close-padding);
-		border: var(--close-border);
-		border-radius: var(--close-border-radius);
 		cursor: pointer;
-		transition: color 0.1s, background 0.1s, opacity 0.1s;
-		opacity: 0.75;
-		position: fixed;
+		display: inline-flex;
+		justify-content: space-around;
+		align-items: center;
+		gap: 3em;
+		padding: 0.5em;
+		position: absolute;
 		top: 0;
 		right: 0;
-		box-shadow: 0 0 5px 0 #000;
+		opacity: 0.75;
+		border-radius: 0 0 0 0.5em;
+		box-shadow: 0 0 0.25em 0 #000;
+		transition: background 0.1s 0s ease-in-out, color 0.1s 0s ease-in-out, opacity 0.1s 0s ease-in-out;
+		z-index: calc(2 + var(--z-index));
 	}
-	#close_svg_cntr {
-		color: var(--close-color);
-		height: var(--close-size);
-		width: var(--close-size);
-		transition: color 0.1s, background 0.1s, opacity 0.1s;
+	#btn_close > span {
+		width: 1em;
+		height: 1em;
 	}
-	#close_svg_cntr > svg {
-		fill: currentColor;
-		stroke: black;
-		stroke-width: 1;
+	#btn_close svg {
+		fill: white;
+		stroke: #000;
+		stroke-width: 0.5;
 		width: 100%;
 		height: auto;
 	}
 	#btn_close:hover {
-		background: var(--close-hover-background);
-		box-shadow: 0 0 5px #000;
+		background: red;
 		opacity: 1;
-		z-index: calc(2 + var(--z-index));
-	}
-	#btn_close:hover #close_svg_cntr {
-		color: var(--close-hover-color);
-	}
-	#btn_close:hover #close_svg_cntr > svg {
-		stroke-width: 0;
 	}
 	#btn_close:active {
 		filter: brightness(0.7);
 	}
-	#title {
-		display: block;
-
-		color: var(--title-color);
-		background: var(--title-background);
-		font-size: var(--title-size);
-		font-weight: var(--title-font-weight);
-		padding: var(--title-padding);
-	}
 	#content {
 		display: block;
-		color: white;
-		max-height: 100%;
 		max-width: 100%;
+		max-height: calc(100% - 2 * var(--content-gap-around));
 		overflow-y: auto;
 		overflow-x: auto;
-		color: var(--content-color);
-		background: var(--content-background);
-		border: var(--content-border);
-		padding: var(--content-padding);
+		background: #fff;
+		color: #000;
+		margin: var(--content-gap-around);
+		padding: 0.75em 1em;
+	}
+	:host([close-disabled]) #btn_close {
+		display: none;
+		pointer-events: none;
 	}
 </style>
 <div id="cntr" class="notitle">
 	<div id="btn_close" part="close" title="Close">
-		<span id="close_svg_cntr">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+		<span>
+			<svg part="close_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 				<path d="M23 20.2 14.8 12 23 3.8 20.2 1 12 9.2 3.8 1 1 3.8 9.2 12 1 20.2 3.8 23l8.2-8.2 8.2 8.2z" />
 			</svg>
 		</span>
@@ -133,7 +148,7 @@
 	<div id="title" part="title">
 		<slot name="title"></slot>
 	</div>
-	<div id="content">
+	<div id="content" part="content">
 		<slot>Hello</slot>
 	</div>
 </div>

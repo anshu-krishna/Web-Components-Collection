@@ -4,15 +4,36 @@
 	<meta charset="UTF-8">
 	<title>Popup Test</title>
 	<style>
+/**************
+* Component parts:
+* title
+* content
+* close
+* close_svg
+**************/
+		pop-up {
+			--z-index: 500;
+
+			--backpanel-backgound: rgba(0, 0, 0, 0.9);
+			--backpanel-padding: 0.75em 1.5em;
+			--content-gap-around: 1em;
+		}
 		pop-up::part(title) {
 			color: white;
 		}
 	</style>
 </head>
 <body>
-	<pop-up>
+<!--
+	Component attributes:
+	open
+	close-disabled
+-->
+	<pop-up open>
 		<span slot="title">This is title</span>
-		lorem200
+		<div>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta veritatis, delectus iste tenetur ex qui quasi id obcaecati quos expedita porro iure, veniam quibusdam nobis labore optio hic. Incidunt distinctio enim rerum, odio eligendi nesciunt inventore dolorem, non blanditiis rem possimus ducimus eos, deserunt hic necessitatibus ullam maxime repellat vel aperiam quo beatae architecto. Cumque asperiores, consequatur ex quisquam commodi velit! Corrupti itaque labore, incidunt quam saepe sint expedita dolorum laudantium nostrum assumenda possimus similique officiis impedit nam cum deserunt nihil! Iure magnam ab nostrum itaque, recusandae quo nam culpa alias soluta perspiciatis optio est earum necessitatibus impedit ea accusantium dignissimos suscipit porro molestias. Delectus sit quam porro consectetur. Placeat aliquid quam, nulla, consequatur vitae quia tempore, adipisci dolorem maxime ipsam veritatis. Impedit sed dolor perspiciatis aliquam, tenetur nemo doloremque animi illum tempora magni. Quo voluptatem enim exercitationem nihil eaque doloribus voluptas reiciendis sunt, temporibus placeat! Provident officiis veritatis obcaecati. Explicabo commodi molestias aliquam eius, error accusamus doloremque, ratione tempora temporibus omnis tempore. Asperiores harum, aliquid earum totam commodi reprehenderit at ipsam neque velit ducimus fugit veritatis deserunt magni! Rem pariatur corrupti aut, fugiat, magnam quas ut molestiae voluptate possimus officiis voluptates cumque esse inventore magni ipsum mollitia excepturi provident.
+		</div>
 	</pop-up>
 	<script type="module" src="./pop-up.js"></script>
 </body>

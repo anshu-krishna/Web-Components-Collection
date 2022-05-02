@@ -3,30 +3,25 @@ class PopUp extends HTMLElement {
 		tag: 'pop-up',
 		template: document.createElement('template')
 	};
-
-	#root;
-	#cntr;
-	#title;
+	#nodes = {};
 	
 	#titleHandler() {
-		if(this.#title.assignedNodes().length) {
-			this.#cntr.classList.remove('notitle');
-			console.log('has title');
+		if(this.#nodes.title.assignedNodes().length) {
+			this.#nodes.cntr.classList.remove('notitle');
 		} else {
-			this.#cntr.classList.add('notitle');
-			console.log('no title');
+			this.#nodes.cntr.classList.add('notitle');
 		}
 	}
 
 	constructor() {
 		super();
-		this.#root = this.attachShadow({mode: 'closed'});
-		this.#root.appendChild(PopUp._meta.template.content.cloneNode(true));
-		this.#cntr = this.#root.querySelector('#cntr');
-		this.#title = this.#root.querySelector('slot[name="title"]');
+		this.#nodes.root = this.attachShadow({mode: 'closed'});
+		this.#nodes.root.appendChild(PopUp._meta.template.content.cloneNode(true));
+		this.#nodes.cntr = this.#nodes.root.querySelector('#cntr');
+		this.#nodes.title = this.#nodes.root.querySelector('slot[name="title"]');
 	}
 	connectedCallback() {
-		this.#title.addEventListener('slotchange', this.#titleHandler.bind(this));
+		this.#nodes.title.addEventListener('slotchange', this.#titleHandler.bind(this));
 	}
 	// disconnectedCallback() {}
 	// adoptedCallback() {}
