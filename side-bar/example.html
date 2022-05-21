@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>side-bar test</title>
-	<script src="./side-bar.js" type="module"></script>
+	<title>Side-Bar Example</title>
+	<script src="./side-bar.min.js" type="module"></script>
 	<style>
+		/* Page Setup */
+		details { margin: 0.25em 0; box-shadow: 0 0 2px black; }
+		details summary { padding: 0.75em 1em; list-style-type: none; cursor: pointer; background: #ececec; }
+		details dl { margin: 0; padding: 0.75em 1em; display: grid; gap: 0.5em; grid-template-columns: max-content 1fr; }
+		details dt::after { content: ' : ';}
+		details dd { margin: 0; }
+
 		/* Custom Sidebar */
 		#custom {
 			--title-background: white;
@@ -38,6 +45,69 @@
 		<button>Open SideBar 1</button>
 		<button>Open SideBar 2</button>
 	</div>
+	<h3>SideBar</h3>
+	<details open>
+		<summary>Attributes:</summary>
+		<dl>
+			<dt><code>open</code></dt>
+			<dd><code>side-bar</code> is visible when <code>open</code> is present</dd>
+			<dt><code>on-right</code></dt>
+			<dd><code>side-bar</code> is on the right side when <code>on-right</code> is present</dd>
+			<dt><code>hide-close-button</code></dt>
+			<dd><code>side-bar</code> close button is hidden when <code>hide-close-button</code> is present</dd>
+			<dt><code>disable-overlay-close</code></dt>
+			<dd><code>side-bar</code> will not close by clicking the overlay if <code>disable-overlay-close</code> is present</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>Events:</summary>
+		<dl>
+			<dt><code>open</code></dt>
+			<dd>Dispatched when <code>side-bar</code> is opened</dd>
+			<dt><code>close</code></dt>
+			<dd>Dispatched when <code>side-bar</code> is closed</dd>
+			<dt><code>toggle</code></dt>
+			<dd>Dispatched when <code>side-bar</code> is opened/closed</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>Properties:</summary>
+		<dl>
+			<dt><code>open</code></dt>
+			<dd>[<code>getter/setter</code>] When <code>true</code> <code>side-bar</code> is open</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>Methods:</summary>
+		<dl>
+			<dt><code>show()</code></dt>
+			<dd>When called <code>side-bar</code> is opened</dd>
+			<dt><code>hide()</code></dt>
+			<dd>When called <code>side-bar</code> is closed</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>Component Parts:</summary>
+		<dl>
+			<dt><code>bar</code></dt>
+			<dd>Use for styling the content side of <code>side-bar</code></dd>
+			<dt><code>overlay</code></dt>
+			<dd>Use for styling the overlay side of <code>side-bar</code></dd>
+			<dt><code>close</code></dt>
+			<dd>Use for styling the close button of <code>side-bar</code></dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>CSS Variables:</summary>
+		<dl>
+			<dt><code>--z-index</code></dt>
+			<dd>Default value <code>500;</code></dd>
+			<dt><code>--delay</code></dt>
+			<dd>Default value <code>0.15s;</code></dd>
+			<dt><code>--title-background</code></dt>
+			<dd>Default value <code>#121212;</code></dd>
+		</dl>
+	</details>
 	<script type="module">
 		const sidebars = [...document.querySelectorAll('side-bar')];
 		const buttons = [...document.querySelectorAll('button')]
