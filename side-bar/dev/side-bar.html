@@ -1,0 +1,119 @@
+<style>
+	* { box-sizing: border-box; }
+	@keyframes slide-in {
+		0% { visibility: visible; transform: translateX(var(--final-translate-value)); }
+		1% { visibility: visible; transform: translateX(var(--final-translate-value)); }
+		100% { visibility: visible; transform: translateX(0%); }
+	}
+	@keyframes slide-out {
+		0% { visibility: visible; transform: translateX(0%); }
+		99% { visibility: visible; transform: translateX(var(--final-translate-value)); }
+		100% { visibility: hidden; transform: translateX(var(--final-translate-value)); }
+	}
+	:host {
+		--z-index: 500;
+		--delay: 0.15s;
+		--final-translate-value: -101%;
+		--title-background: #121212;
+
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		grid-template-areas: "bar overlay";
+		z-index: var(--z-index);
+		margin: 0;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		color: white;
+		visibility: hidden;
+		transform: translateX(var(--final-translate-value));
+	}
+	:host([on-right]) {
+		--final-translate-value: 101%;
+		grid-template-columns: 1fr max-content;
+		grid-template-areas: "overlay bar";
+	}
+	:host([open]) {
+		transform: translateX(0%);
+		animation: slide-in var(--delay) forwards;
+		visibility: visible;
+	}
+	/* :host(:not([open])) {
+		animation: slide-out var(--delay) forwards;
+	} */
+	#bar {
+		grid-area: bar;
+		background: #212121;
+		width: 20em;
+		max-width: 70vw;
+		display: grid;
+		grid-template-rows: min-content 1fr;
+		height: 100vh;
+		overflow: hidden;
+	}
+	#overlay {
+		grid-area: overlay;
+		background: linear-gradient(to right, rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.5) 100%);
+		padding: 0;
+		cursor: pointer;
+	}
+	:host([disable-overlay-close]) #overlay {
+		cursor: default;
+	}
+	#title_cntr {
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		background: var(--title-background);
+	}
+	#close {
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-family: 'Courier New', Courier, monospace;
+		padding: 0.3em;
+		cursor: pointer;
+		font-size: 1.1em;
+		line-height: 1em;
+		border-radius: 0 0 0 0.3em;
+		text-shadow: 0 0 3px black;
+		opacity: 0.5;
+		color: white;
+		transition: opacity ease-in-out 0.1s;
+		z-index: calc(1+ var(--z-index));
+	}
+	#close:hover {
+		opacity: 1;
+		background: red;
+		text-shadow: none;
+		box-shadow: 0 0 3px black;
+	}
+	#close:active {
+		filter: brightness(0.7);
+	}
+	:host([on-right]) #close {
+		right: auto;
+		left: 0;
+		border-radius: 0 0 0.3em 0;
+	}
+	:host([hide-close-button]) #close {
+		display: none;
+	}
+	#content {
+		overflow-y: auto;
+	}
+</style>
+<div part="bar" id="bar">
+	<div id="title_cntr">
+		<span part="close" id="close">&#128473;</span>
+		<slot name="title"></slot>
+	</div>
+	<div id="content">
+		<slot></slot>
+	</div>
+</div>
+<div part="overlay" id="overlay"></div>
