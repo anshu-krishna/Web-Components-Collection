@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>side-menu-bar test</title>
+	<script src="./loader.js" type="module"></script>
+	<style>
+		app-layout {
+			background: #313131;
+			color: white;
+		}
+		app-layout::part(header) {
+			background: #212121;
+			color: wheat;
+		}
+		app-layout::part(sidebar) {
+			background: #121212;
+			color: wheat;
+		}
+	</style>
+</head>
+<body>
+	<!-- <app-layout right> -->
+	<app-layout>
+		<h3 slot="header">This is header</h3>
+		
+		<sidebar-item slot="sidebar"><svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 6.453l9 8.375v9.172h-6v-6h-6v6h-6v-9.172l9-8.375zm12 5.695l-12-11.148-12 11.133 1.361 1.465 10.639-9.868 10.639 9.883 1.361-1.465z"/></svg>Home</sidebar-item>
+
+		<sidebar-item slot="sidebar">2</sidebar-item>
+		
+		<sidebar-item slot="sidebar">
+			<details>
+				<summary>test</summary>
+				<ul>
+					<li><a href="https://www.google.com" target="_blank" rel="noopener noreferrer">Google</a></li>
+					<li><a href="https://www.yahoo.com" target="_blank" rel="noopener noreferrer">Yahoo</a></li>
+				</ul>
+			</details>
+		</sidebar-item>
+
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati beatae ab fuga officiis, iste eius totam ut aspernatur sint voluptatibus, velit a quis. Consequuntur vitae illo quis corrupti voluptates nobis?</p>
+		<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Harum fuga ex doloribus modi cum ab, alias eum consequatur qui eligendi.</p>
+	</app-layout>
+	<!-- <script type="module"></script> -->
+</body>
+</html>
