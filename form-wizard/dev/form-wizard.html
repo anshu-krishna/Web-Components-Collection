@@ -1,0 +1,101 @@
+<style>
+	* { box-sizing: border-box; }
+	:host {
+		display: none;
+		z-index: 100;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background: transparent;
+	}
+	:host([open]) {
+		display: inline-block;
+	}
+	#cntr {
+		padding: 2em;
+		height: 100vh;
+		display: grid;
+		grid-template-rows: min-content 1fr max-content;
+		gap: 0.5em;
+		background: rgba(0, 0, 0, 0.75);
+	}
+	:host([single-form]) #cntr {
+		grid-template-rows: 1fr max-content;
+	}
+	#slotc {
+		overflow-y: hidden;
+		display: grid;
+		justify-content: center;
+		align-items: center;
+		background: #fff;
+	}
+	#fslot::slotted(:not(form)), #fslot::slotted(:not(form.active)) {
+		display: none;
+	}
+	#fslot::slotted(form.active) {
+		border: 1px dotted;
+		display: grid;
+		max-height: 100%;
+		overflow-y: auto;
+	}
+	#actions {
+		display: flex;
+		justify-content: end;
+		gap: 0.5em;
+	}
+	#actions > button {
+		cursor: pointer;
+		padding: 0.25em 0.75em;
+	}
+	#actions > button:disabled {
+		cursor: not-allowed;
+	}
+	#states {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1em;
+		align-items: center;
+		justify-content: center;
+	}
+	:host([single-form]) #states {
+		display: none;
+	}
+	#states > span {
+		display: grid;
+		font-size: 0.7em;
+		font-family: Arial, Helvetica, sans-serif;
+		width: 1.8em;
+		height: 1.8em;
+		border-radius: 0.9em;
+		justify-content: center;
+		align-items: center;
+		background: #dedede;
+		color: black;
+		box-shadow: 0 0 3px grey;
+	}
+	#states > span.done {
+		background: blue;
+		color: white;
+	}
+	#states > span.err {
+		background: red;
+		color: white;
+	}
+	#states > span.active {
+		background: #212121;
+		color: white;
+	}
+</style>
+<div id="cntr">
+	<div id="states"></div>
+	<div id="slotc">
+		<slot id="fslot"></slot>
+	</div>
+	<div id="actions">
+		<button>Back</button>
+		<button>Next</button>
+		<button>Cancel</button>
+	</div>
+</div>
