@@ -50,7 +50,7 @@
 		fw.addEventListener('submit', ({detail}) => {
 			console.log('Submit data', detail);
 		});
-		fw.addEventListener('ready', () => {
+		fw.addEventListener('setup-end', () => {
 			fw.show();
 		});
 	</script>
