@@ -36,6 +36,7 @@ if (typeof customElements.get('form-wizard') === 'undefined') {
 			form.classList.add('active');
 			this.#states[index].classList.add('active');
 			this.#activeIdx = index;
+			form.querySelector('input, textarea')?.focus();
 		}
 		get #active() { return this.#activeIdx; }
 
