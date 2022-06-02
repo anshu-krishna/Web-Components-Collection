@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Form-Wizard</title>
+	<style>
+		/* FORM-WIZARD CUSTOM STYLEING */
+		#custom::part(button) {
+			background: #ededed;
+			color: #000;
+		}
+		#custom::part(button):disabled {
+			filter: brightness(0.5);
+		}
+		#custom::part(dot) {
+			background: #212121;
+			border: 0.1em solid #ededed;
+		}
+		#custom::part(dot-ok) {
+			background: rgb(0, 225, 0);
+		}
+		#custom::part(dot-error) {
+			background: rgb(193, 0, 0);
+		}
+		#custom::part(dot-spacer) {
+			background: #121212;
+		}
+		#custom::part(overlay) {
+			background: linear-gradient(to right, #0000ff7f 0%, #0000003f 100%);
+		}
+		#custom::part(button-container) {
+			gap: 1em;
+		}
+		/* PAGE SETUP */
+		body {
+			margin: 0;
+			padding: 0;
+			display: grid;
+			grid-template-rows: max-content;
+			gap: 0.5em;
+		}
+		h3 {
+			text-align: center;
+			background: #212121;
+			color: white;
+			margin: 0;
+			padding: 0.5em 0.75em;
+		}
+		details {
+			display: grid;
+			gap: 0.5em;
+			border: 1px solid #ededed;
+		}
+		details > summary {
+			cursor: pointer;
+			font-weight: bold;
+			font-size: large;
+			list-style-type: none;
+			padding: 0.25em 0.75em;
+			background: #ededed;
+		}
+		details > dl, details > div {
+			padding: 0.5em 0.75em;
+			margin: 0;
+		}
+		dl {
+			display: grid;
+			grid-template-columns: max-content 1fr;
+			gap: 0.5em;
+		}
+		dl > dt::after {
+			content: " : ";
+		}
+		dl > dd {
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<form-wizard>
+		<form>
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora sequi nulla beatae expedita voluptatem illum ullam nisi iste nihil quisquam.</p>
+			Name: <input name="name" type="text" required /></form>
+		<form>Age: <input name="age" type="number"  /></form>
+		<form>Country: <input name="country" type="text" required /></form>
+	</form-wizard>
+
+	<form-wizard id="custom" combined-formdata>
+		<form data-back-text="---" data-next-text="Procced" data-cancel-text="Close">Name: <input name="name" type="text" required /></form>
+		<form data-skippable="true">Age: <input name="age" type="number"  /></form>
+		<form>Country: <input name="country" type="text" required /></form>
+	</form-wizard>
+
+	<h3>Form-Wizard WebComponent</h3>
+	<details open>
+		<summary><code>Examples:</code></summary>
+		<div>
+			<button>Open Wizard #1</button>
+			<button>Open Wizard #2</button>
+		</div>
+	</details>
+	<details open>
+		<summary><code>Attributes:</code></summary>
+		<dl>
+			<dt><code>combined-formdata</code></dt>
+			<dd>When present <code>submit</code> event combines data from all <em>valid</em> <code>form</code>(s) into a single <code>FormData</code> as event <code>detail</code>.</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary><code>Events:</code></summary>
+		<dl>
+			<dt><code>ready</code></dt>
+			<dd>Dispatched after the <code>children</code> <code>form</code>(s) are loaded.</dd>
+			<dt><code>submit</code></dt>
+			<dd>Dispatched on clicking the <code>Finish</code> (last <code>Next</code>) button.</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary><code>Methods:</code></summary>
+		<dl>
+			<dt><code>show()</code></dt>
+			<dd>Opens the wizard.</dd>
+			<dt><code>hide()</code></dt>
+			<dd>Hides the wizard</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary><code>Special data-attributes for children form(s):</code></summary>
+		<dl>
+			<dt><code>data-back-text</code></dt>
+			<dd>Use for setting the <code>Back</code> button's text for the form.</dd>
+			<dt><code>data-next-text</code></dt>
+			<dd>Use for setting the <code>Next</code> button's text for the form.</dd>
+			<dt><code>data-cancel-text</code></dt>
+			<dd>Use for setting the <code>Cancel</code> button's text for the form.</dd>
+			<dt><code>data-back-disabled="true"</code></dt>
+			<dd>Use for disabling the <code>Back</code> button for the form.</dd>
+			<dt><code>data-next-disabled="true"</code></dt>
+			<dd>Use for disabling the <code>Next</code> button for the form.</dd>
+			<dt><code>data-cancel-disabled="true"</code></dt>
+			<dd>Use for disabling the <code>Cancel</code> button for the form.</dd>
+			<dt><code>data-skippable="true"</code></dt>
+			<dd>If value is <code>true</code> then the <code>form</code> can be skipped without validation.</dd>
+		</dl>
+	</details>
+	<details open>
+		<summary>Component Parts:</summary>
+		<dl>
+			<dt><code>button</code></dt>
+			<dd>Use for styling <code>Back</code>, <code>Next</code> and <code>Cancel</code> buttons.</dd>
+			<dt><code>dot</code></dt>
+			<dd>Use for styling the <code>form</code> state indicator dot at the top.</dd>
+			<dt><code>dot-ok</code></dt>
+			<dd>Use for styling the <code>dot</code> part for a <em>valid</em> <code>form</code>.</dd>
+			<dt><code>dot-error</code></dt>
+			<dd>Use for styling the <code>dot</code> part for a <em>invalid</em> <code>form</code>.</dd>
+			<dt><code>dot-spacer</code></dt>
+			<dd>Use for styling the spacer between the <code>dot</code> parts.</dd>
+			<dt><code>overlay</code></dt>
+			<dd>Use for styling the background overlay. <em><strong>Use carefully or it can break the component.</strong></em></dd>
+			<dt><code>form-container</code></dt>
+			<dd>Use for styling the internal container for <code>form</code>. <em><strong>Use carefully or it can break the component.</strong></em></dd>
+			<dt><code>button-container</code></dt>
+			<dd>Use for styling the internal container for action <code>button</code>(s). <em><strong>Use carefully or it can break the component.</strong></em></dd>
+		</dl>
+	</details>
+	<details open>
+		<summary><code>Additional helper module exports:</code></summary>
+		<dl>
+			<dt>combineFormData(...form)</dt>
+			<dd>Helper <code>function</code> for merging multiple <code>form</code>'s data into a single <code>FormData</code>.</dd>
+		</dl>
+	</details>
+	<script type="module">
+		import './form-wizard.min.js';
+
+		const btns = [...document.querySelectorAll('details:first-of-type button')];
+		for(const [i, w] of Object.entries([...document.querySelectorAll('form-wizard')])) {
+			w.addEventListener('submit', ({detail}) => {
+				if(detail instanceof FormData) {
+					console.log('Submit data', Object.fromEntries(detail.entries()));
+				} else {
+					console.log('Submit data', detail);
+				}
+			});
+
+			w.addEventListener('ready', () => {
+				btns[i].onclick = () => {
+					w.show();
+				};
+				if(i == 1) {
+					btns[i].click();
+				}
+			});
+		}
+	</script>
+</body>
+</html>

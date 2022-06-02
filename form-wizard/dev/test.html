@@ -4,28 +4,55 @@
 	<meta charset="UTF-8">
 	<title>Form-Wizard</title>
 	<style>
+		form {
+			background: #212121;
+			color: white;
+			display: grid;
+			gap: 0.5em;
+		}
+		form > input {
+			background: #212121;
+			color: white;
+			padding: 0.3em 0.5em;
+			border: none;
+			border-bottom: 1px solid;
+		}
+		/* form-wizard::part(dot) {
+			border-radius: 0;
+		}
+		form-wizard::part(dot-ok) {
+			background: green;
+		}
+		form-wizard::part(dot-error) {
+			background: red;
+		} */
 	</style>
 </head>
 <body>
-	<form-wizard>
-		<form>Name: <input type="text" required />lorem500</form>
-		<form>Age: <input type="number" /></form>
+	<form-wizard combined-formdata>
+		<form data-skippable="true">Name: <input name="name" type="text" required />lorem500</form>
+		<form>Age: <input name="age" type="number" /></form>
 		<form data-next-text="Accept" data-back-text="Decline">
 			<p>
 				LICENSE: Lorem ipsum, dolor sit amet consectetur adipisicing elit. Soluta necessitatibus facere pariatur placeat aliquid rerum facilis ducimus quibusdam veritatis, illum ab fugiat praesentium beatae at. Tempore, sequi provident ut velit earum inventore commodi illum nulla facere sed, placeat odit accusamus! Quos consequuntur suscipit quibusdam ea ratione? Amet voluptate veniam asperiores? Totam libero rem, beatae commodi eveniet voluptates reprehenderit itaque incidunt placeat? Illo animi, recusandae veritatis earum accusamus dolorum hic sunt asperiores reprehenderit veniam! Repudiandae laudantium velit sint culpa nulla ullam eos ipsum officia unde iste sunt tempora a aliquam aspernatur tenetur, deserunt quae, suscipit fuga sapiente excepturi ea dignissimos eveniet natus! Nobis consequuntur magnam nesciunt. Obcaecati aliquam consequuntur odit, pariatur fugit vel ullam tenetur animi ad, labore tempore quas ab corporis ipsam magni, porro culpa quaerat explicabo nulla! Inventore quo nam optio ea commodi ipsum molestias temporibus in aperiam minima nihil neque autem quidem assumenda nostrum voluptatem dolorum rem distinctio illum accusantium soluta, vel fugit delectus magni. Perferendis, inventore vel, voluptatibus ut natus non mollitia voluptas quaerat distinctio quia iusto labore incidunt voluptate voluptates! Ipsum architecto veritatis laboriosam, natus animi doloremque quae voluptatem odit, assumenda culpa a? Possimus exercitationem excepturi, similique earum qui illum nihil dolorum, magni quidem temporibus totam.
 			</p>
 			<p>
-				Read: <input type="checkbox" required>
+				Read: <input name="license" type="checkbox" required>
 			</p>
 		</form>
-		<form>Country: <input type="text" required /></form>
+		<form>Country: <input name="country" type="text" required /></form>
 	</form-wizard>
 	Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, qui natus recusandae quasi ea tempora sequi a alias cupiditate repellat eveniet consectetur totam fugit enim perspiciatis, quam facilis veritatis esse modi odio voluptas placeat atque ex. Laborum aliquid, reprehenderit libero molestiae natus veniam modi voluptatum ipsa iusto non iure, corporis ut dolore optio! Neque ut maiores aspernatur porro deserunt quas molestiae delectus voluptatum adipisci aliquid! Nisi, soluta adipisci. Facilis, enim? Corrupti aliquam dolor maiores deleniti maxime ex accusamus numquam ut suscipit minus sequi amet, doloremque, pariatur veritatis saepe commodi ipsa soluta adipisci laborum nesciunt ipsum rerum consequuntur. Consectetur impedit quisquam nisi excepturi cumque nulla assumenda suscipit sint officiis illum? Sunt adipisci, similique ducimus laudantium minima fugit, aspernatur maxime quod quidem dolore nihil delectus ullam aliquid accusantium quia itaque corporis sit perferendis dolores. Iusto magnam minus laborum odio earum ipsam dolores veritatis itaque nostrum odit. Reiciendis aliquid iste veritatis? Voluptatum enim quia, a, autem facilis quo blanditiis numquam est libero illum ullam tenetur aut consectetur saepe repudiandae sed? Illo expedita eveniet quae quo laborum nemo molestias, ad rerum at voluptates. Adipisci non repudiandae voluptas sapiente, eos consequuntur, accusamus ex eum fuga veritatis beatae quasi doloremque accusantium, officiis a tenetur dolor autem!
 	<script type="module">
 		import './form-wizard.js';
 
 		const fw = document.querySelector('form-wizard');
-		fw.show();
+		fw.addEventListener('submit', ({detail}) => {
+			console.log('Submit data', detail);
+		});
+		fw.addEventListener('ready', () => {
+			fw.show();
+		});
 	</script>
 </body>
 </html>
