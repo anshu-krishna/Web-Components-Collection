@@ -1,0 +1,48 @@
+<style>
+	* { box-sizing: border-box; }
+	:host {
+		--slider-gap: 0.05em;
+		--roundness: 1em;
+
+		display: inline-block;
+		height: 1.25em;
+		width: 2.5em;
+		cursor: pointer;
+		background: #cccccc;
+		transition: background ease-in-out 0.08s;
+		border-radius: var(--roundness);
+		box-shadow: 0 0 0.1em black;
+	}
+	:host([disabled]) {
+		filter: saturate(0) brightness(0.4);
+		pointer-events: none;
+	}
+	#cntr {
+		height: 100%;
+		position: relative;
+	}
+	#slider {
+		height: calc(100% - (2 * var(--slider-gap)));
+		width: calc(50% - (2 * var(--slider-gap)));
+		background: white;
+		position: absolute;
+		top: var(--slider-gap);
+		left: var(--slider-gap);
+		box-shadow: 0 0 0.1em black;
+		border-radius: calc(var(--roundness) - var(--slider-gap));
+		transition: left ease-in-out 0.08s;
+	}
+	:host([on]) {
+		background: #2196f3;
+	}
+	:host([on]) #slider {
+		left: calc(50% + var(--slider-gap));
+	}
+	#cntr input {
+		display: none;
+	}
+</style>
+<div id="cntr">
+	<div part="slider" id="slider"></div>
+	<input type="checkbox" novalidate />
+</div>
