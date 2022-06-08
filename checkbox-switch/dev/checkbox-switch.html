@@ -3,6 +3,7 @@
 	:host {
 		--slider-gap: 0.05em;
 		--roundness: 1em;
+		--transition-duration: 0.08s;
 
 		display: inline-block;
 		height: 1.25em;
@@ -17,9 +18,15 @@
 		filter: saturate(0) brightness(0.4);
 		pointer-events: none;
 	}
+	:host(:focus) {
+		box-shadow:
+		0 0 0 0.05em rgba(100, 100, 255, 0.5),
+		0 0 0.1em 0.05em black;
+	}
 	#cntr {
 		height: 100%;
 		position: relative;
+		z-index: 2;
 	}
 	#slider {
 		height: calc(100% - (2 * var(--slider-gap)));
@@ -30,7 +37,7 @@
 		left: var(--slider-gap);
 		box-shadow: 0 0 0.1em black;
 		border-radius: calc(var(--roundness) - var(--slider-gap));
-		transition: left ease-in-out 0.08s;
+		transition: left ease-in-out var(--transition-duration);
 	}
 	:host([on]) {
 		background: #2196f3;
@@ -39,7 +46,15 @@
 		left: calc(50% + var(--slider-gap));
 	}
 	#cntr input {
-		display: none;
+		opacity: 0;
+		width: 0px;
+		height: 0px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 1;
+		padding: 0;
+		margin: 0;
 	}
 </style>
 <div id="cntr">

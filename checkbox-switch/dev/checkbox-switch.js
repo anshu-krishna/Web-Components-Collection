@@ -11,6 +11,8 @@ if (typeof customElements.get('checkbox-switch') === 'undefined') {
 		#root;
 		#ip;
 		#internals;
+		#labels = [];
+		#labelClickHandler;
 
 		constructor() {
 			super();
@@ -18,9 +20,14 @@ if (typeof customElements.get('checkbox-switch') === 'undefined') {
 			this.#root.appendChild(__template__.content.cloneNode(true));
 			this.#ip = this.#root.querySelector('input');
 			this.#internals = this.attachInternals();
+
 			this.#root.querySelector('#cntr').addEventListener('click', () => {
 				this.on = !this.hasAttribute('on');
 			});
+
+			this.#labelClickHandler = (function() {
+				if(!this.hasAttribute('disabled')) { this.on = !this.hasAttribute('on'); }
+			}).bind(this);
 		}
 		get on() { return this.hasAttribute('on'); }
 		set on(value) {
@@ -39,31 +46,30 @@ if (typeof customElements.get('checkbox-switch') === 'undefined') {
 				this.removeAttribute('required');
 			}
 		}
-		connectedCallback() {
+		#DOMSetup() {
 			this.#formActions();
+			this.#labels = [...this.#internals.labels];
+			for(const l of this.#labels) {
+				l.addEventListener('click', this.#labelClickHandler);
+			}
 		}
+		connectedCallback() { this.#DOMSetup(); }
 		#formActions() {
-			console.clear();
-			console.group('FA');
 			const on = this.hasAttribute('on');
 			this.#internals.setFormValue(String(on));
-			if(this.hasAttribute('required') && !on) {
-				console.log(this, 'Invalid');
-				this.#internals.setValidity({ valueMissing: true}, 'This is required', this.#ip);
+			if (this.hasAttribute('required') && !on) {
+				this.#internals.setValidity({ valueMissing: true }, 'Required: This must be ON', this.#ip);
 			} else {
-				console.log(this, 'Valid');
 				this.#internals.setValidity({});
 			}
-			console.log('Data:', this.#internals.form?.dataList);
-			console.groupCollapsed('Trace');
-			console.trace();
-			console.groupEnd();
-			console.groupEnd();
 		}
-		// disconnectedCallback() {}
-		adoptedCallback() {
-			this.#formActions();
+		disconnectedCallback() {
+			for(const l of this.#labels) {
+				try { l?.removeEventListener('click', this.#labelClickHandler); } catch (error) {}
+			}
+			this.#labels = [];
 		}
+		adoptedCallback() { this.#DOMSetup(); }
 
 		static get observedAttributes() {
 			return ['on', 'required'];
@@ -71,20 +77,19 @@ if (typeof customElements.get('checkbox-switch') === 'undefined') {
 		attributeChangedCallback(attrName, oldVal, newVal) {
 			if (oldVal === newVal) { return; }
 			// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
-			switch(attrName) {
+			switch (attrName) {
 				case 'on': {
 					const value = newVal !== null;
-					console.log('Setting [ON] = ', value);
-					if(value) { this.#ip.setAttribute('checked', 'checked'); } else { this.#ip.removeAttribute('checked'); }
+					// if(value) { this.#ip.setAttribute('checked', 'checked'); } else { this.#ip.removeAttribute('checked'); }
 					this.#formActions();
 					this.dispatchEvent(new Event('change'));
 				} break;
 				case 'required': {
-					if(newVal === null) {
-						this.#ip.removeAttribute('required');
+					if (newVal === null) {
+						// this.#ip.removeAttribute('required');
 						this.#internals.ariaRequired = false;
 					} else {
-						this.#ip.setAttribute('required', '');
+						// this.#ip.setAttribute('required', '');
 						this.#internals.ariaRequired = true;
 					}
 				} break;
