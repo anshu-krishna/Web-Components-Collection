@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Bool-Switch</title>
+	<style>
+		#showcase bool-switch {
+			font-size: 2em;
+			margin: 0.2em;
+		}
+		#custom bool-switch {
+			background: radial-gradient(ellipse at center, #ffbd7b 0%,#f8ac60 44%,#ee9740 100%);
+			--roundness: 0.1em;
+			--slider-gap: -2px;
+			width: 3em;
+			height: 1em;
+		}
+		#custom bool-switch:not([on]) {
+			background: radial-gradient(ellipse at center, #e7e7e7 0%,#d5d5d5 47%,#c1c1c1 100%);
+		}
+		#custom bool-switch[disabled] {
+			filter: saturate(0) brightness(0.5);
+		}
+		#custom bool-switch::part(slider) {
+			background: radial-gradient(ellipse at center, #fffff7 0%,#ffffe1 47%,#ffffc9 100%);
+		}
+	</style>
+</head>
+<body>
+	<div id="showcase">
+		<bool-switch on disabled></bool-switch>
+		<bool-switch on></bool-switch>
+		<bool-switch></bool-switch>
+		<div id="custom">
+			<bool-switch on disabled></bool-switch>
+			<bool-switch on></bool-switch>
+			<bool-switch></bool-switch>
+		</div>
+	</div>
+	<hr>
+	<form>
+		<label>
+			Internal Label
+			<bool-switch id="s" name="s" tabindex="1" required></bool-switch>
+		</label>
+		<input type="text" name="other" value="random" />
+		<button>Test Submit</button>
+	</form>
+	<hr>
+	<label for="s">External Label</label>
+	
+	<script type="module">
+		import './bool-switch.js';
+		const f = document.querySelector('form');
+		Object.defineProperty(f, 'fdata', {
+			get() { return Object.fromEntries((new FormData(this)).entries()); }
+		});
+		f.addEventListener('submit', (e) => {
+			e.preventDefault();
+			console.log('Form:', f, '\nValid:', f.checkValidity(), '\nData:', f.fdata);
+			f.reportValidity();
+		});
+	</script>
+</body>
+</html>

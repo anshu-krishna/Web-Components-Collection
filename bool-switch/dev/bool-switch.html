@@ -19,14 +19,14 @@
 		pointer-events: none;
 	}
 	:host(:focus) {
-		box-shadow:
-		0 0 0 0.05em rgba(100, 100, 255, 0.5),
-		0 0 0.1em 0.05em black;
+		outline: 5px auto -webkit-focus-ring-color;
+		outline: 5px auto Highlight;
 	}
 	#cntr {
 		height: 100%;
 		position: relative;
 		z-index: 2;
+		pointer-events: none;
 	}
 	#slider {
 		height: calc(100% - (2 * var(--slider-gap)));
@@ -46,18 +46,18 @@
 		left: calc(50% + var(--slider-gap));
 	}
 	#cntr input {
-		opacity: 0;
-		width: 0px;
-		height: 0px;
 		position: absolute;
 		bottom: 0;
-		left: 0;
-		z-index: 1;
+		left: 25%;
 		padding: 0;
 		margin: 0;
+		border: none;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
 	}
 </style>
 <div id="cntr">
 	<div part="slider" id="slider"></div>
-	<input type="checkbox" novalidate />
+	<input type="checkbox" />
 </div>
