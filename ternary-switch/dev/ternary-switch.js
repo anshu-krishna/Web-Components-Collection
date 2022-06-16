@@ -7,6 +7,7 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 	class TernarySwitch extends HTMLElement {
 		#root;
 		#internals;
+		#btns;
 
 		set value(value) {
 			value = Number(value);
@@ -30,9 +31,17 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 			super();
 			this.#root = this.attachShadow({ mode: 'closed' });
 			this.#root.appendChild(__template__.content.cloneNode(true));
+			this.#btns = this.#root.querySelectorAll('div.button');
 			this.#internals = this.attachInternals();
 			for(const p of Object.keys(ElementInternals.prototype).filter(v => v.startsWith('aria'))) {
 				Object.defineProperty(this, p, { value: this.#internals[p] });
+			}
+			for(const btn of this.#btns) {
+				btn.onclick = () => {
+					if(!btn.classList.contains('active')) {
+						this.value = btn.dataset.value;
+					}
+				};
 			}
 		}
 		connectedCallback() { this.#formUpdate(); }
@@ -45,7 +54,13 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 			// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
 			switch(attrName) {
 				case 'value': {
-					this.#internals.setFormValue(this.value);
+					const value = this.value;
+					for(const b of this.#btns) { b.classList.remove('active'); }
+					(this.#btns[value + 1]).classList.add('active');
+					this.#internals.setFormValue(value);
+					this.dispatchEvent(new Event('change', {
+						bubbles: true
+					}));
 				} break;
 			}
 		}
@@ -53,25 +68,25 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 		// FORM RELATED
 		#formUpdate() {
 			this.#internals.setFormValue(this.value);
-			// this.#internals.setValidity({});
+			this.#internals.setValidity({});
 		}
-		// static get focusable() { return true; }
+		static get focusable() { return true; }
 		static get formAssociated() { return true; }
-		// get shadowRoot() { return this.#internals.shadowRoot; }
-		// get form() { return this.#internals.form; }
-		// get states() { return this.#internals.states; }
-		// get willValidate() { return this.#internals.willValidate; }
-		// get validity() { return this.#internals.validity; }
-		// get validationMessage() { return this.#internals.validationMessage; }
-		// get labels() { return this.#internals.labels; }
+		get shadowRoot() { return this.#internals.shadowRoot; }
+		get form() { return this.#internals.form; }
+		get states() { return this.#internals.states; }
+		get willValidate() { return this.#internals.willValidate; }
+		get validity() { return this.#internals.validity; }
+		get validationMessage() { return this.#internals.validationMessage; }
+		get labels() { return this.#internals.labels; }
 
-		// setFormValue(...args) { return this.#internals.setFormValue(...args); }
-		// setValidity(...args) { return this.#internals.setValidity(...args); }
-		// checkValidity(...args) { return this.#internals.checkValidity(...args); }
-		// reportValidity(...args) { return this.#internals.reportValidity(...args); }
+		setFormValue(...args) { return this.#internals.setFormValue(...args); }
+		setValidity(...args) { return this.#internals.setValidity(...args); }
+		checkValidity(...args) { return this.#internals.checkValidity(...args); }
+		reportValidity(...args) { return this.#internals.reportValidity(...args); }
 
-		// get name() { return this.getAttribute('name'); }
-		// get type() { return this.localName; }
+		get name() { return this.getAttribute('name'); }
+		get type() { return this.localName; }
 	}
 
 	customElements.define('ternary-switch', TernarySwitch);

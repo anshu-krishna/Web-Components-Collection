@@ -3,11 +3,39 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Ternary-Switch</title>
+	<style>
+		ternary-switch {
+			--font-color: linear-gradient(to right, blue 25%,  #99f);
+		}
+		.dark {
+			background: #121212;
+			color: #fff;
+			--font-color: currentColor;
+		}
+		div {
+			display: grid;
+			align-items: center;
+			gap: 0.5em;
+			grid-template-columns: max-content max-content;
+		}
+	</style>
 </head>
 <body>
-	<ternary-switch></ternary-switch>
+	<form>
+		<div>Normal: <ternary-switch name="a"></ternary-switch></div>
+		<div>Disabled: <ternary-switch name="b" disabled></ternary-switch></div>
+		<div>Dark: <ternary-switch name="c" class="dark"></ternary-switch></div>
+		<div>Dark Disabled: <ternary-switch name="d" class="dark" disabled></ternary-switch></div>
+	</form>
 	<script type="module">
 		import './ternary-switch.js';
+		const form = document.querySelector('form');
+		Object.defineProperty(form, 'fdata', {
+			get() { return Object.fromEntries((new FormData(this)).entries()); }
+		});
+		form.addEventListener('change', () => {
+			console.log('Form data: ', form.fdata);
+		});
 	</script>
 </body>
 </html>
