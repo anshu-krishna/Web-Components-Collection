@@ -19,19 +19,30 @@
 			display: inline-block;
 			padding: 0;
 			margin: 0;
-			background: linear-gradient(to right, gold 50%, grey 50%);
+			background: linear-gradient(to right, blue 20%, #99f 80%);
 			width: 100%;
 			aspect-ratio: 1;
 			outline: solid 1px;
-			clip-path: path('M50 0L64.694631 29.774575L97.552826 34.54915L73.776413 57.725425L79.389263 90.45085L50 75L20.610737 90.45085L26.223587 57.725425L2.447174 34.54915L35.305369 29.774575Z');
 		}
 		#t {
 			display: block;
 			padding: 0;
 			margin: 0;
-			filter: drop-shadow(2px 2px 3px #000);
+			filter: drop-shadow(2px 2px 5px #000);
 			width: 5em;
-			outline: auto;
+			/* outline: auto; */
+		}
+		input::-webkit-outer-spin-button,
+		input::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+		input {
+			-moz-appearance: textfield;
+			border: none;
+			width: 3em;
+			text-align: center;
+			border-bottom: 1px solid #aaa;
 		}
 	</style>
 </head>
@@ -40,7 +51,7 @@
 		<span id="c"></span>
 	</div>
 	<br />
-	Size: <input type="number" min="0.25" max="50" value="5" step="0.25" /> em
+	Size: <input type="number" min="0.25" max="50" value="5" step="0.25" autocomplete="off" /> em
 	<script>
 		function DQS(selector) { return document.querySelector(selector); }
 		function DCE(tag) { return document.createElement(tag); }
@@ -52,7 +63,7 @@
 		const ro = new ResizeObserver(entries => {
 			const s = entries[0].contentRect.width;
 			DQS('#c').setAttribute('style', `clip-path: path(${starMaker({ width: s, height: s }).path})`);
-			console.log('s =', s);
+			// console.log('s =', s);
 		});
 		ro.observe(DQS('#t'));
 	</script>
