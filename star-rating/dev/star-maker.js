@@ -57,7 +57,11 @@ function starMaker({
 		}
 	}
 
+	const path = `"M${vIdx.map(i => `${Round(x[i])} ${Round(y[i])}`).join('L')}Z"`;
 	const t = document.createElement('template');
-	t.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" stroke="#000" stroke-width="1" xmlns="http://www.w3.org/2000/svg"><path d="M${vIdx.map(i => `${Round(x[i])} ${Round(y[i])}`).join('L')}Z" /></svg>`;
-	return t.content.firstElementChild;
+	t.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" stroke="#000" stroke-width="1" xmlns="http://www.w3.org/2000/svg"><path d=${path} /></svg>`;
+	return {
+		svg: t.content.firstElementChild,
+		path: path
+	};
 }
