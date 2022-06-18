@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Star Maker</title>
+	<script src="./star-maker.js"></script>
+	<style>
+		body { margin: 0; padding: 0; }
+		svg {
+			display: inline-block;
+			/* fill: #77f; */
+			/* stroke: none; */
+			fill: none;
+			stroke: black;
+			/* filter: drop-shadow(2px 2px 3px #55f); */
+			outline: auto;
+		}
+		#c {
+			display: inline-block;
+			padding: 0;
+			margin: 0;
+			background: linear-gradient(to right, blue 25%, #77f);
+			width: 100%;
+			aspect-ratio: 1;
+			outline: solid 1px;
+			clip-path: path('M50 0L64.694631 29.774575L97.552826 34.54915L73.776413 57.725425L79.389263 90.45085L50 75L20.610737 90.45085L26.223587 57.725425L2.447174 34.54915L35.305369 29.774575Z');
+		}
+		#t {
+			display: block;
+			padding: 0;
+			margin: 0;
+			filter: drop-shadow(2px 2px 3px #000);
+			width: 100px;
+		}
+	</style>
+</head>
+<body>
+	<div id="t">
+		<span id="c"></span>
+	</div>
+	<script>
+		function DQS(selector) { return document.querySelector(selector); }
+		function DCE(tag) { return document.createElement(tag); }
+		function AppendHTML(node, item) { node.insertAdjacentHTML('beforeend', item); }
+		DQS('body').appendChild(starMaker({ width: 50, height: 50 }));
+
+		const ro = new ResizeObserver(entries => {
+			console.log('resize', entries);
+		});
+		ro.observe(DQS('#t'));
+	</script>
+</body>
+</html>
