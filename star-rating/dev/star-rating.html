@@ -1,0 +1,31 @@
+<style>
+	* { box-sizing: border-box; }
+	div {
+		display: inline-block;
+		padding: 0;
+		margin: 0;
+		/* outline: dotted 1px; */
+	}
+	:host {
+		--star-color: gold;
+		--star-gap: 0.1em;
+
+		display: inline-block;
+		height: 1.5em;
+	}
+	#cntr {
+		display: flex;
+		flex-wrap: nowrap;
+		height: 100%;
+		gap: var(--star-gap);
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+	/* [part="star"] { filter: drop-shadow(2px 2px 2px black); } */
+	[part="star"] > span {
+		display: inline-block;
+		padding: 0;
+		margin: 0;
+		background: var(--star-color);
+	}
+</style><div id="cntr"></div>

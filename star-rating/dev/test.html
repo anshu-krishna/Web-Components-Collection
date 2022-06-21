@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Star-Rating</title>
+	<style>
+		star-rating {
+			height: 5em;
+			--star-gap: 0.5em;
+			--star-color: linear-gradient(to right, blue, #55f);
+			background: linear-gradient(to right, #dfdfdf, #efefef);
+			padding: 0.5em;
+			box-shadow: 0 0 5px black;
+		}
+		star-rating::part(star) {
+			filter: drop-shadow(1px 1px 2px black);
+		}
+	</style>
+</head>
+<body>
+	<star-rating></star-rating>
+	<script type="module">
+		import './star-rating.js';
+
+		const n = document.querySelector('star-rating');
+
+	</script>
+</body>
+</html>
