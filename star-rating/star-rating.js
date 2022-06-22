@@ -1,0 +1,246 @@
+if (typeof customElements.get('star-rating') === 'undefined') {
+	const __template__ = document.createElement('template');
+	__template__.innerHTML = `<style>*{box-sizing:border-box;padding:0;margin:0}div{display:inline-block}:host{--star-gap:.15em;display:inline-block;height:2em;padding:.15em .25em}#cntr{--clip-path:none;outline:none;position:relative;display:flex;flex-wrap:nowrap;height:100%;gap:var(--star-gap);overflow-x:auto;overflow-y:hidden;width:auto}:host(:focus){outline:5px auto -webkit-focus-ring-color;outline:5px auto Highlight}[part="star"]{--star-fill-color:radial-gradient(yellow,gold 40%);--star-empty-color:#999;filter:drop-shadow(1px 1px 2px black);height:100%}:host([changeable]) [part="star"]:hover{transform:scale(.9);cursor:pointer}[part="star"]>span{display:inline-block;height:100%;aspect-ratio:1;background:var(--star-fill-color);clip-path:var(--clip-path);position:relative;--fill:100%}[part="star"]>span::after{display:inline-block;z-index:1;content:'';position:absolute;left:var(--fill);height:100%;width:calc(100% - var(--fill));background:var(--star-empty-color)}#ip{position:absolute;bottom:0;left:25%;border:none;width:1px;height:1px;opacity:0}</style><div id="cntr"></div>`;
+
+	class SR extends HTMLElement {
+		static* #RangeN(start = 0, end = null, step = 1) {
+			end ??= Number.MAX_SAFE_INTEGER - step;
+			const stepSign = Math.sign(step);
+			if(Math.sign(end - start) !== stepSign) {
+				throw new RangeError(`Infinite steps: ${start} -> ${end} is impossible with ${step} as increment`);
+			}
+			let i = start;
+			while(i !== end && Math.sign(end - i) === stepSign) {
+				yield i;
+				i += step;
+			}
+		}
+		static #checkNum(value, {
+			int = false,
+			mod = null,
+			min = null,
+			max = null
+		} = {}) {
+			let v = Number(value);
+			if(!Number.isFinite(v)) { return null; }
+			if(int) { v = parseInt(v); }
+			if(mod !== null) {
+				const m = min ?? 0;
+				while(v < m) { v+= mod; }
+				v %= mod;
+			}
+			if(min !== null && v < min) { return null; }
+			if(max !== null && v > max) { return null; }
+			return v;
+		}
+
+		#nodes;
+		#internals;
+
+		#attrs = {
+			points: 5, depth: 50,
+			rotate: 0, precision: 2,
+			value: 0, max: 5
+		};
+
+		/* Number of points in the star */
+		get points() { return this.#attrs.points; }
+		set points(value) { this.setAttribute('points', value); }
+
+		/* Depth in percentage [0, 90) */
+		get depth() { return this.#attrs.depth; }
+		set depth(value) { this.setAttribute('depth', value); }
+
+		/* Rotate in Degree [0, 360] */
+		get rotate() { return this.#attrs.rotate; }
+		set rotate(value) { this.setAttribute('rotate', value); }
+
+		/* Precision: digits after decimal [0, 7] */
+		get precision() { return this.#attrs.precision; }
+		set precision(value) { this.setAttribute('precision', value); }
+
+		/* Max star count [1, 10] */
+		get max() { return this.#attrs.max; }
+		set max(value) { this.setAttribute('max', value); }
+
+		/* Value [0, Max] */
+		get value() { return this.#attrs.value; }
+		set value(v) { this.setAttribute('value', v); }
+		
+		constructor() {
+			super();
+			this.#nodes = {
+				root: this.attachShadow({ mode: 'closed' }),
+				get starSpans() { return this.cntr.querySelectorAll('div > span'); },
+				get ip() { return this.cntr.querySelector('#ip'); }
+			};
+			this.#nodes.root.appendChild(__template__.content.cloneNode(true));
+			this.#nodes.cntr = this.#nodes.root.querySelector('#cntr');
+
+			this.#internals = this.attachInternals();
+			for(const p of Object.keys(ElementInternals.prototype).filter(v => v.startsWith('aria'))) {
+				Object.defineProperty(this, p, { value: this.#internals[p] });
+			}
+			
+			this.#setClipPath();
+			this.#genStars();
+			this.#fillStars();
+		}
+		#genStars(count = 5) {
+			this.#nodes.cntr.innerHTML = `${[...SR.#RangeN(0, count)].map(() => `<div part="star"><span></span></div>`).join('')}<input id="ip" type="checkbox" />`;
+		}
+		static #calc_scale_n_offset(p) {
+			const
+				min = Math.min(...p),
+				max = Math.max(...p);
+			// p.scale = 100 / (max - min);
+			p.offset = 50 - ((max + min) / 2);
+		}
+		#setClipPath() {
+			// console.log('Drawing -->', this.#attrs);
+			const
+				sR = (100 - this.#attrs.depth) / 2,
+				digits = this.#attrs.precision,
+				x = [],
+				y = [],
+				polygon = [];
+			
+			for(
+				const [i, ang] of
+				Object.entries(
+					[...SR.#RangeN(
+						this.#attrs.rotate + 270 ,
+						360 + 270 + this.#attrs.rotate,
+						180 / this.#attrs.points
+					)].map(ang => {
+						const rad = (ang % 360) * Math.PI / 180;
+						return { sin: Math.sin(rad), cos: Math.cos(rad)};
+					})
+				)
+			) {
+				const l = i % 2 ? sR : 50;
+				x.push(l * ang.cos);
+				y.push(l * ang.sin);
+			}
+			SR.#calc_scale_n_offset(x);
+			SR.#calc_scale_n_offset(y);
+
+			for(const i of SR.#RangeN(0, x.length)) {
+				polygon.push(`${
+					// Number((x[i] * x.scale + x.offset).toFixed(digits))
+					Number((x[i] + x.offset).toFixed(digits))
+				}% ${
+					// Number((y[i] * y.scale + y.offset).toFixed(digits))
+					Number((y[i] + y.offset).toFixed(digits))
+				}%`);
+			}
+
+			this.#nodes.cntr.style.setProperty('--clip-path', `polygon(${polygon.join(',')})`);
+		}
+		#fillStars() {
+			let { max, value } = this.#attrs;
+			value = Number(value.toFixed(2));
+			const stars = [...this.#nodes.starSpans];
+			for(const i of SR.#RangeN(0, max)) {
+				let fill = value - i;
+				if(fill > 1) { fill = 1; }
+				else if(fill < 0) { fill = 0; }
+				stars[i].style.setProperty('--fill', `${fill * 100}%`);
+			}
+		}
+		#setClickHandlers(changeable) {
+			if(changeable) {
+				for(const [i, s] of Object.entries(this.#nodes.starSpans)) {
+					s.parentElement.onclick = (e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						this.value = parseInt(i) + 1;
+					};
+				}
+			} else {
+				for(const s of this.#nodes.starSpans) {
+					s.parentElement.onclick = null;
+				}
+			}
+		}
+		connectedCallback() { this.#formUpdate(); }
+		// disconnectedCallback() { }
+		adoptedCallback() { this.#formUpdate(); }
+
+		static get observedAttributes() {
+			return [
+				'points', 'depth', 'rotate', 'precision',
+				'max', 'value', 'changeable', 'required'
+			];
+		}
+		attributeChangedCallback(attrName, oldVal, newVal) {
+			if(oldVal === newVal) { return; }
+			// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
+			switch(attrName) {
+				case 'points': {
+					this.#attrs.points = SR.#checkNum(newVal, { int: true, min: 2 }) ?? 5;
+					this.#setClipPath();
+				} break;
+				case 'depth': {
+					this.#attrs.depth = SR.#checkNum(newVal, { min: 0, max: 99 }) ?? 50;
+					this.#setClipPath();
+				} break;
+				case 'rotate': {
+					this.#attrs.rotate = SR.#checkNum(newVal, { mod: 360, min: 0, max: 360 }) ?? 0;
+					this.#setClipPath();
+				} break;
+				case 'precision': {
+					this.#attrs.precision = SR.#checkNum(newVal, { int: true, min: 0, max: 7 }) ?? 7;
+					this.#setClipPath();
+				} break;
+				case 'max': {
+					this.#attrs.max = SR.#checkNum(newVal, { int:true, min:1, max: 10 }) ?? 5;
+					this.#genStars(this.#attrs.max);
+					this.#fillStars();
+					this.#formUpdate();
+					this.#setClickHandlers(this.hasAttribute('changeable'));
+				} break;
+				case 'value': {
+					this.#attrs.value = SR.#checkNum(newVal, { min: 0, max: this.max }) ?? 0;
+					this.#fillStars();
+					this.#formUpdate();
+					this.dispatchEvent(new Event('change', { bubbles: true }));
+				} break;
+				case 'changeable': {
+					this.#setClickHandlers(newVal !== null);
+				} break;
+				case 'required': { this.#formUpdate(); } break;
+			}
+		}
+
+		// FORM RELATED
+		#formUpdate() {
+			const value = this.value;
+			this.#internals.setFormValue(value);
+			if(this.hasAttribute('required') && value === 0) {
+				this.#internals.setValidity({ valueMissing: true }, 'A rating is required', this.#nodes.ip);
+			} else {
+				this.#internals.setValidity({});
+			}
+		}
+		// static get focusable() { return true; }
+		static get formAssociated() { return true; }
+		get shadowRoot() { return this.#internals.shadowRoot; }
+		get form() { return this.#internals.form; }
+		get states() { return this.#internals.states; }
+		get willValidate() { return this.#internals.willValidate; }
+		get validity() { return this.#internals.validity; }
+		get validationMessage() { return this.#internals.validationMessage; }
+		get labels() { return this.#internals.labels; }
+
+		setFormValue(...args) { return this.#internals.setFormValue(...args); }
+		setValidity(...args) { return this.#internals.setValidity(...args); }
+		checkValidity(...args) { return this.#internals.checkValidity(...args); }
+		reportValidity(...args) { return this.#internals.reportValidity(...args); }
+
+		get name() { return this.getAttribute('name'); }
+		get type() { return this.localName; }
+	}
+
+	customElements.define('star-rating', SR);
+}

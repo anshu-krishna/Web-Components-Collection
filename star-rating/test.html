@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Star-Rating</title>
+	<style>
+		#custom {
+			font-size: 1.2em;
+			background: #212121;
+		}
+		#custom::part(star) {
+			--star-fill-color: radial-gradient(#77f, #99f);
+			--star-empty-color: #454545;
+		}
+	</style>
+</head>
+<body>
+	<form>
+		<strong>Not Changeable :</strong>
+		<star-rating name="a" value="2.5"></star-rating>
+		<br>
+		<strong>Changeable :</strong>
+		<star-rating name="b" changeable max="7"></star-rating>
+		<br>
+		<strong>Changeable + Required + Custom-Styled :</strong>
+		<star-rating id="custom" name="c" required changeable></star-rating>
+	</form>
+	<hr>
+	<button>Log FormData</button>
+	<script type="module">
+		import './star-rating.min.js';
+
+		const f = document.querySelector('form');
+		Object.defineProperty(f, 'info', {
+			get() {
+				const d = new FormData(this);
+				return Object.fromEntries(d.entries());
+			}
+		});
+		document.querySelector('button').onclick = () => {
+			console.log('Validity', f.checkValidity(), '\nFormData', f.info);
+			f.reportValidity();
+		};
+		for(const sr of document.querySelectorAll('star-rating')) {
+			sr.addEventListener('change', () => {
+				console.log('Changed', sr, '\nMax =', sr.max, 'Value =', sr.value);
+			});
+		}
+	</script>
+</body>
+</html>
