@@ -4,7 +4,7 @@ if (typeof customElements.get('star-rating') === 'undefined') {
 	const __template_file__ = String(new URL(import.meta.url + '/../star-rating.html'));
 	__template__.innerHTML = await fetch(__template_file__).then(html => html.text()).catch(e => 'Unable to load: ' + __template_file__);
 
-	class StarRating extends HTMLElement {
+	class SR extends HTMLElement {
 		static* #RangeN(start = 0, end = null, step = 1) {
 			end ??= Number.MAX_SAFE_INTEGER - step;
 			const stepSign = Math.sign(step);
@@ -41,11 +41,9 @@ if (typeof customElements.get('star-rating') === 'undefined') {
 
 		#attrs = {
 			points: 5, depth: 50,
-			rotate: 0, precision: 7,
+			rotate: 0, precision: 2,
+			value: 0, max: 5
 		};
-		
-		#angles = [];
-		#resizeObserver;
 
 		/* Number of points in the star */
 		get points() { return this.#attrs.points; }
@@ -62,12 +60,21 @@ if (typeof customElements.get('star-rating') === 'undefined') {
 		/* Precision: digits after decimal [0, 7] */
 		get precision() { return this.#attrs.precision; }
 		set precision(value) { this.setAttribute('precision', value); }
+
+		/* Max star count [1, 10] */
+		get max() { return this.#attrs.max; }
+		set max(value) { this.setAttribute('max', value); }
+
+		/* Value [0, Max] */
+		get value() { return this.#attrs.value; }
+		set value(v) { this.setAttribute('value', v); }
 		
 		constructor() {
 			super();
 			this.#nodes = {
 				root: this.attachShadow({ mode: 'closed' }),
-				get stars() { return this.cntr.querySelectorAll('#cntr > div > span'); }
+				get starSpans() { return this.cntr.querySelectorAll('div > span'); },
+				get ip() { return this.cntr.querySelector('#ip'); }
 			};
 			this.#nodes.root.appendChild(__template__.content.cloneNode(true));
 			this.#nodes.cntr = this.#nodes.root.querySelector('#cntr');
@@ -77,119 +84,165 @@ if (typeof customElements.get('star-rating') === 'undefined') {
 				Object.defineProperty(this, p, { value: this.#internals[p] });
 			}
 			
+			this.#setClipPath();
 			this.#genStars();
-
-			this.#resizeObserver = new ResizeObserver(entries => {
-				const height = entries[0].contentRect.height;
-				this.#draw(height)
-			});
-			this.#resizeObserver.observe(this);
+			this.#fillStars();
 		}
 		#genStars(count = 5) {
-			this.#nodes.cntr.innerHTML = `${[...StarRating.#RangeN(0, count)].map(() => `<div part="star"><span></span></div>`).join('')}`;
+			this.#nodes.cntr.innerHTML = `${[...SR.#RangeN(0, count)].map(() => `<div part="star"><span></span></div>`).join('')}<input id="ip" type="checkbox" />`;
 		}
-		#calcAngles() {
-			const incr = 180 / this.#attrs.points;
-			this.#angles = [...StarRating.#RangeN(
-				this.#attrs.rotate,
-				(2 * this.#attrs.points * incr) + this.#attrs.rotate,
-				incr
-			)].map(a => {
-				const deg = (a - 90) % 360;
-				const rad = deg * Math.PI / 180;
-				return {
-					deg: deg,
-					sin: Math.sin(rad),
-					cos: Math.cos(rad)
-				};
-			});
+		static #calc_scale_n_offset(p) {
+			const
+				min = Math.min(...p),
+				max = Math.max(...p);
+			// p.scale = 100 / (max - min);
+			p.offset = 50 - ((max + min) / 2);
 		}
-		#draw(sizeInPx = null) {
-			console.log('Drawing', sizeInPx);
+		#setClipPath() {
+			// console.log('Drawing -->', this.#attrs);
+			const
+				sR = (100 - this.#attrs.depth) / 2,
+				digits = this.#attrs.precision,
+				x = [],
+				y = [],
+				polygon = [];
 			
-			if(sizeInPx === null) { sizeInPx = this.#nodes.cntr.clientHeight; }
-			if(this.#angles.length === 0) { this.#calcAngles(); }
-			const rL = sizeInPx / 2;
-			const rS = rL * (100 - this.#attrs.depth) / 100;
-			const x = [], y = [];
-			for(const i in this.#angles) {
-				const r = (i % 2) ? rS : rL;
-				const { sin, cos } = this.#angles[i];
-				x.push(r * cos);
-				y.push(r * sin)
+			for(
+				const [i, ang] of
+				Object.entries(
+					[...SR.#RangeN(
+						this.#attrs.rotate + 270 ,
+						360 + 270 + this.#attrs.rotate,
+						180 / this.#attrs.points
+					)].map(ang => {
+						const rad = (ang % 360) * Math.PI / 180;
+						return { sin: Math.sin(rad), cos: Math.cos(rad)};
+					})
+				)
+			) {
+				const l = i % 2 ? sR : 50;
+				x.push(l * ang.cos);
+				y.push(l * ang.sin);
 			}
-			const xoff = rL - ((Math.max(...x) + Math.min(...x)) / 2);
-			const yoff = rL - ((Math.max(...y) + Math.min(...y)) / 2);
+			SR.#calc_scale_n_offset(x);
+			SR.#calc_scale_n_offset(y);
 
-			const digits = this.#attrs.precision;
-			
-			let path = [];
-			for(const i in this.#angles) {
-				x[i] = Number((x[i] + xoff).toFixed(digits));
-				y[i] = Number((y[i] + yoff).toFixed(digits));
-				path.push(`${x[i]} ${y[i]}`);
+			for(const i of SR.#RangeN(0, x.length)) {
+				polygon.push(`${
+					// Number((x[i] * x.scale + x.offset).toFixed(digits))
+					Number((x[i] + x.offset).toFixed(digits))
+				}% ${
+					// Number((y[i] * y.scale + y.offset).toFixed(digits))
+					Number((y[i] + y.offset).toFixed(digits))
+				}%`);
 			}
-			path = `M${path.join('L')}Z`;
 
-			for(const s of this.#nodes.stars) {
-				s.setAttribute('style',`width:${sizeInPx}px; height:${sizeInPx}px; clip-path: path('${path}');`);
+			this.#nodes.cntr.style.setProperty('--clip-path', `polygon(${polygon.join(',')})`);
+		}
+		#fillStars() {
+			let { max, value } = this.#attrs;
+			value = Number(value.toFixed(2));
+			const stars = [...this.#nodes.starSpans];
+			for(const i of SR.#RangeN(0, max)) {
+				let fill = value - i;
+				if(fill > 1) { fill = 1; }
+				else if(fill < 0) { fill = 0; }
+				stars[i].style.setProperty('--fill', `${fill * 100}%`);
 			}
 		}
-		// connectedCallback() { this.#formUpdate(); }
+		#setClickHandlers(changeable) {
+			if(changeable) {
+				for(const [i, s] of Object.entries(this.#nodes.starSpans)) {
+					s.parentElement.onclick = (e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						this.value = parseInt(i) + 1;
+					};
+				}
+			} else {
+				for(const s of this.#nodes.starSpans) {
+					s.parentElement.onclick = null;
+				}
+			}
+		}
+		connectedCallback() { this.#formUpdate(); }
 		// disconnectedCallback() { }
-		// adoptedCallback() { this.#formUpdate(); }
+		adoptedCallback() { this.#formUpdate(); }
 
 		static get observedAttributes() {
-			return ['points', 'depth', 'rotate', 'precision'];
+			return [
+				'points', 'depth', 'rotate', 'precision',
+				'max', 'value', 'changeable', 'required'
+			];
 		}
 		attributeChangedCallback(attrName, oldVal, newVal) {
 			if(oldVal === newVal) { return; }
 			// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
 			switch(attrName) {
 				case 'points': {
-					this.#attrs.points = StarRating.#checkNum(newVal, { int: true, min: 2 }) ?? 5;
-					this.#calcAngles();
-					this.#draw();
+					this.#attrs.points = SR.#checkNum(newVal, { int: true, min: 2 }) ?? 5;
+					this.#setClipPath();
 				} break;
 				case 'depth': {
-					this.#attrs.depth = StarRating.#checkNum(newVal, { min: 0, max: 99 }) ?? 50;
-					this.#draw();
+					this.#attrs.depth = SR.#checkNum(newVal, { min: 0, max: 99 }) ?? 50;
+					this.#setClipPath();
 				} break;
 				case 'rotate': {
-					this.#attrs.rotate = StarRating.#checkNum(newVal, { mod: 360, min: 0, max: 360 }) ?? 0;
-					this.#calcAngles();
-					this.#draw();
+					this.#attrs.rotate = SR.#checkNum(newVal, { mod: 360, min: 0, max: 360 }) ?? 0;
+					this.#setClipPath();
 				} break;
 				case 'precision': {
-					this.#attrs.precision = StarRating.#checkNum(newVal, { int: true, min: 0, max: 7 }) ?? 7;
-					this.#draw();
+					this.#attrs.precision = SR.#checkNum(newVal, { int: true, min: 0, max: 7 }) ?? 7;
+					this.#setClipPath();
 				} break;
+				case 'max': {
+					this.#attrs.max = SR.#checkNum(newVal, { int:true, min:1, max: 10 }) ?? 5;
+					this.#genStars(this.#attrs.max);
+					this.#fillStars();
+					this.#formUpdate();
+					this.#setClickHandlers(this.hasAttribute('changeable'));
+				} break;
+				case 'value': {
+					this.#attrs.value = SR.#checkNum(newVal, { min: 0, max: this.max }) ?? 0;
+					this.#fillStars();
+					this.#formUpdate();
+					this.dispatchEvent(new Event('change', { bubbles: true }));
+				} break;
+				case 'changeable': {
+					this.#setClickHandlers(newVal !== null);
+				} break;
+				case 'required': { this.#formUpdate(); } break;
 			}
 		}
 
 		// FORM RELATED
-		// #formUpdate() {
-		// 	this.#internals.setFormValue(0);
-		// 	this.#internals.setValidity({});
-		// }
+		#formUpdate() {
+			const value = this.value;
+			this.#internals.setFormValue(value);
+			if(this.hasAttribute('required') && value === 0) {
+				this.#internals.setValidity({ valueMissing: true }, 'A rating is required', this.#nodes.ip);
+			} else {
+				this.#internals.setValidity({});
+			}
+		}
 		// static get focusable() { return true; }
-		// static get formAssociated() { return true; }
-		// get shadowRoot() { return this.#internals.shadowRoot; }
-		// get form() { return this.#internals.form; }
-		// get states() { return this.#internals.states; }
-		// get willValidate() { return this.#internals.willValidate; }
-		// get validity() { return this.#internals.validity; }
-		// get validationMessage() { return this.#internals.validationMessage; }
-		// get labels() { return this.#internals.labels; }
+		static get formAssociated() { return true; }
+		get shadowRoot() { return this.#internals.shadowRoot; }
+		get form() { return this.#internals.form; }
+		get states() { return this.#internals.states; }
+		get willValidate() { return this.#internals.willValidate; }
+		get validity() { return this.#internals.validity; }
+		get validationMessage() { return this.#internals.validationMessage; }
+		get labels() { return this.#internals.labels; }
 
-		// setFormValue(...args) { return this.#internals.setFormValue(...args); }
-		// setValidity(...args) { return this.#internals.setValidity(...args); }
-		// checkValidity(...args) { return this.#internals.checkValidity(...args); }
-		// reportValidity(...args) { return this.#internals.reportValidity(...args); }
+		setFormValue(...args) { return this.#internals.setFormValue(...args); }
+		setValidity(...args) { return this.#internals.setValidity(...args); }
+		checkValidity(...args) { return this.#internals.checkValidity(...args); }
+		reportValidity(...args) { return this.#internals.reportValidity(...args); }
 
-		// get name() { return this.getAttribute('name'); }
-		// get type() { return this.localName; }
+		get name() { return this.getAttribute('name'); }
+		get type() { return this.localName; }
 	}
 
-	customElements.define('star-rating', StarRating);
+	customElements.define('star-rating', SR);
 }

@@ -1,31 +1,69 @@
 <style>
-	* { box-sizing: border-box; }
+	* { box-sizing: border-box; padding: 0; margin: 0; }
 	div {
 		display: inline-block;
-		padding: 0;
-		margin: 0;
 		/* outline: dotted 1px; */
 	}
 	:host {
-		--star-color: gold;
-		--star-gap: 0.1em;
+		--star-gap: 0.15em;
 
 		display: inline-block;
-		height: 1.5em;
+		height: 2em;
+		padding: 0.15em 0.25em;
 	}
 	#cntr {
+		--clip-path: none;
+
+		outline: none;
+		position: relative;
 		display: flex;
 		flex-wrap: nowrap;
 		height: 100%;
 		gap: var(--star-gap);
 		overflow-x: auto;
 		overflow-y: hidden;
+		width: auto;
 	}
-	/* [part="star"] { filter: drop-shadow(2px 2px 2px black); } */
+	:host(:focus) {
+		outline: 5px auto -webkit-focus-ring-color;
+		outline: 5px auto Highlight;
+	}
+	[part="star"] {
+		--star-fill-color: radial-gradient(yellow, gold 40%);
+		--star-empty-color: #999;
+		filter: drop-shadow(1px 1px 2px black);
+		height: 100%;
+	}
+	:host([changeable]) [part="star"]:hover {
+		transform: scale(0.9);
+		cursor: pointer;
+	}
 	[part="star"] > span {
 		display: inline-block;
-		padding: 0;
-		margin: 0;
-		background: var(--star-color);
+		height: 100%;
+		aspect-ratio: 1;
+		background: var(--star-fill-color);
+		clip-path: var(--clip-path);
+		position: relative;
+		--fill: 100%;
+	}
+	[part="star"] > span::after {
+		display: inline-block;
+		z-index: 1;
+		content: '';
+		position: absolute;
+		left: var(--fill);
+		height: 100%;
+		width: calc(100% - var(--fill));
+		background: var(--star-empty-color);
+	}
+	#ip {
+		position: absolute;
+		bottom: 0;
+		left: 25%;
+		border: none;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
 	}
 </style><div id="cntr"></div>
