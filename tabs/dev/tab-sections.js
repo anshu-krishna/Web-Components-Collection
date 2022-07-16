@@ -1,18 +1,28 @@
-const __tab_sections__ = 'tab-sections';
-if (typeof customElements.get(__tab_sections__) === 'undefined') {
-	const __template__ = document.createElement('template');
+class TabSections extends HTMLElement {
+	static #template;
+	static #tag = 'tab-sections';
+	static {
+		(async () => {
+			this.#template = document.createElement('template');
 
-	const __template_file__ = String(new URL(import.meta.url + '/../' + __tab_sections__ + '.html'));
-	__template__.innerHTML = await fetch(__template_file__).then(html => html.text().catch(e => 'Unable to load: ' + __template_file__));
+			this.#template.innerHTML = await (async () => {
+				const file = String(new URL(import.meta.url + '/../' + this.#tag + '.html'));
+				const html = await fetch(file);
+				return (html.status === 200) ? (await html.text()) : '<code>Load-Error: '+ file +'</code>';
+			})();
 
-	class TabSections extends HTMLElement {
-		#root;
+			customElements.define(this.#tag, this);
+			console.log('WebCompoent Loaded: ' + this.#tag + ';');
+		})();
+	}
+
+	#root;
 		#slot;
 
 		constructor() {
 			super();
 			this.#root = this.attachShadow({ mode: 'closed' });
-			this.#root.appendChild(__template__.content.cloneNode(true));
+			this.#root.appendChild(TabSections.#template.content.cloneNode(true));
 			this.#slot = this.#root.querySelector('slot');
 		}
 		get #slottedSections() {
@@ -51,9 +61,8 @@ if (typeof customElements.get(__tab_sections__) === 'undefined') {
 		// disconnectedCallback() {}
 		// adoptedCallback() {}
 
-		static get observedAttributes() {
-			return ["selected"];
-		}
+		static get observedAttributes() { return ["selected"]; }
+
 		attributeChangedCallback(attrName, oldVal, newVal) {
 			// console.log("Changed", attrName, ":", oldVal, "->", newVal);
 			switch (attrName) {
@@ -64,7 +73,4 @@ if (typeof customElements.get(__tab_sections__) === 'undefined') {
 					break;
 			}
 		}
-	}
-
-	customElements.define(__tab_sections__, TabSections);
 }
