@@ -1,11 +1,22 @@
-if (typeof customElements.get('ternary-switch') === 'undefined') {
-	const __template__ = document.createElement('template');
+class TernarySwitch extends HTMLElement {
+	static #template;
+	static #tag = 'ternary-switch';
+	static {
+		(async () => {
+			this.#template = document.createElement('template');
 
-	const __template_file__ = String(new URL(import.meta.url + '/../ternary-switch.html'));
-	__template__.innerHTML = await fetch(__template_file__).then(html => html.text()).catch(e => 'Unable to load: ' + __template_file__);
+			this.#template.innerHTML = await (async () => {
+				const file = String(new URL(import.meta.url + '/../' + this.#tag + '.html'));
+				const html = await fetch(file);
+				return (html.status === 200) ? (await html.text()) : '<code>Load-Error: '+ file +'</code>';
+			})();
 
-	class TernarySwitch extends HTMLElement {
-		#root;
+			customElements.define(this.#tag, this);
+			console.log('WebCompoent Loaded: ' + this.#tag + ';');
+		})();
+	}
+
+	#root;
 		#internals;
 		#btns;
 
@@ -30,7 +41,7 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 		constructor() {
 			super();
 			this.#root = this.attachShadow({ mode: 'closed' });
-			this.#root.appendChild(__template__.content.cloneNode(true));
+			this.#root.appendChild(TernarySwitch.#template.content.cloneNode(true));
 			this.#btns = this.#root.querySelectorAll('div.button');
 			this.#internals = this.attachInternals();
 			for(const p of Object.keys(ElementInternals.prototype).filter(v => v.startsWith('aria'))) {
@@ -87,7 +98,4 @@ if (typeof customElements.get('ternary-switch') === 'undefined') {
 
 		get name() { return this.getAttribute('name'); }
 		get type() { return this.localName; }
-	}
-
-	customElements.define('ternary-switch', TernarySwitch);
 }
