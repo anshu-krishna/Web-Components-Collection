@@ -1,0 +1,13 @@
+tab-headers > header {
+	padding: 10px 15px;
+	border: 1px solid #ededed;
+}
+
+tab-headers > header[data-selected] {
+	border-bottom: 2px solid black;
+}
+
+tab-sections {
+	padding: 10px 15px;
+	border: 1px solid #ededed;
+}

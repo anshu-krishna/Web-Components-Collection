@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Star-Rating Example</title>
+	<script src="star-rating.min.js"></script>
+	<style>
+		p {
+			font-size: 2rem;
+			margin: 0.5em 0;
+			padding: 0;
+			display: flex;
+			align-items: center;
+			grid-gap: 1em;
+		}
+		star-rating.styled {
+			font-size: 2em;
+			background: #f2f2f2;
+			padding: 0.25em;
+			box-shadow: 0 0 3px black;
+			--star-fill-color: blue;
+			--star-back-color: grey;
+			--star-stroke: black;
+			--star-stroke-width: 0.2em;
+			--star-stroke-opacity: 0.9;
+		}
+	</style>
+</head>
+<body>
+	<p>
+		<star-rating></star-rating>
+		Default rating element
+	</p>
+	<p>
+		<star-rating value="2.5"></star-rating>
+		Rating with default max.
+	</p>
+	<p>
+		<star-rating value="5" max="10"></star-rating>
+		Rating with max = 10.
+	</p>
+	<p>
+		<star-rating class="styled" value="3.7" max="5"></star-rating>
+		This rating has been custom styled.
+	</p>
+	<p>
+		<star-rating id="myrating" value="2" max="5" changeable></star-rating>
+		This rating is changeable.
+	</p>
+	
+	<script>
+		let rating = document.querySelector('#myrating');
+		rating.addEventListener('change', ({detail}) => {
+			console.log('Rating value changed', detail);
+		});
+	</script>
+</body>
+</html>

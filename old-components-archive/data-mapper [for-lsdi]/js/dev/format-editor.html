@@ -1,0 +1,46 @@
+<style>
+	* { box-sizing: border-box; padding: 0; margin: 0; }
+	:host {
+		display: block;
+		box-shadow: var(--box-shadow);
+	}
+	#cntr {
+		position: relative;
+		display: grid;
+	}
+	textarea {
+		border: none;
+		/* box-shadow: var(--box-shadow); */
+		padding: var(--text-padding);
+		background: var(--background);
+		color: var(--color);
+		height: 3em;
+		resize: vertical;
+		font-family: Consolas, 'Courier New', monospace;
+	}
+	pre {
+		display: none;
+		position: absolute;
+		top: calc(100% + 0.25em);
+		left: 0.5em;
+		max-width: calc(100% - 1em);
+		width: calc(100% - 1em);
+		z-index: 10;
+		white-space: pre-wrap;
+		font-family: Consolas, 'Courier New', monospace;
+		padding: var(--text-padding);
+		box-shadow: 0 0 2px currentColor;
+		background: var(--popup-background);
+		color: var(--popup-color);
+	}
+	pre.err {
+		background: var(--popup-err-background);
+		box-shadow: var(--box-shadow);
+	}
+	pre.show {
+		display: block;
+	}
+</style><div id="cntr">
+	<textarea rows="1" placeholder="Enter format here"></textarea>
+	<pre>Format: ""</pre>
+</div>

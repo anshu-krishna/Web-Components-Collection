@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<title>Check-Box-Group</title>
+	<style>
+		label {
+			font-weight: bold;
+			cursor: pointer;
+			margin: 0.5em;
+			padding: 0.5em;
+			box-shadow: 0 0 3px black;
+		}
+		input[type="checkbox"] {
+			display: none;
+		}
+		input[type="checkbox"]:disabled + label {
+			color: grey;
+			cursor: not-allowed;
+		}
+		input[type="checkbox"]:checked + label {
+			color: white;
+			background: black;
+		}
+	</style>
+</head>
+<body>
+	<check-box-group>
+		<option value="1">One</option>
+		<option value="2" checked>Two</option>
+		<option value="3">Three</option>
+		<option value="4">Four</option>
+		<option value="5">Five</option>
+	</check-box-group>
+	<br />
+	<check-box-group>
+		<option value="a">A</option>
+		<option value="b">B</option>
+		<option value="c" disabled>C</option>
+	</check-box-group>
+	<script src="check-box-group.js"></script>
+	<script>
+		let cbgs = document.querySelectorAll('check-box-group');
+		for(let cbg of cbgs) {
+			cbg.addEventListener('change', ({target, detail}) => {
+				console.log(target, 'Changed', detail);
+			});
+		}
+	</script>
+</body>
+</html>

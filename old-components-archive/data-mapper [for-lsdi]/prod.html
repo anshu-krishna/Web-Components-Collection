@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Data-Mapper Example [Prop]</title>
+	<style>
+		* { box-sizing: border-box; padding: 0; margin: 0; }
+		body {
+			background: #212121;
+			color: white;
+			font-family: Garamond, serif;
+			--text-padding: 0.5em 0.75em;
+		}
+		section {
+			text-align: center;
+			padding: var(--text-padding);
+		}
+		button {
+			padding: var(--text-padding);
+			cursor: pointer;
+		}
+		pre {
+			white-space: pre-wrap;
+			font-family: Consolas, 'Courier New', monospace;
+			padding: var(--text-padding);
+		}
+		data-mapper {
+			--text-padding: 0.5em 0.75em;
+			--box-shadow: 0 0 2px currentColor;
+			
+			--background: #121212;
+			--alt-background: #263238;
+			--color: white;
+			
+			--popup-background: #0d47a1;
+			--popup-err-background: #d50000;
+			--popup-color: white;
+
+			--head-background: #0d47a1;
+			--head-color: white;
+
+			--max-preview-height: 32vh;
+		}
+	</style>
+</head>
+<body>
+	<data-mapper></data-mapper>
+	<hr />
+	<section><button>GET Formatted Data</button></section>
+	<hr />
+	<pre>Click button for data</pre>
+	<script type="module">
+		import "./js/prod/data-mapper-min.js";
+
+		const dm = document.querySelector('data-mapper');
+		const sampleData = await fetch('./sample-data.json').then(v => v.json());
+		dm.setData({
+			inputHead : sampleData.input.head,
+			data : sampleData.input.data,
+			outputHead : sampleData.output,
+			maxPreviewLen : 7,
+			allowEmpty : true,
+			allowConstant : true,
+			allowOnlyStrOutput : false
+		});
+		document.querySelector('button').onclick = async () => {
+			const info = await dm.getFormattedData();
+			const pre = document.querySelector('pre');
+			if(info === null) {
+				pre.innerText = 'Complete the mapper definitions';
+				return;
+			}
+			pre.innerText = [`head = ${JSON.stringify(info.head)}`, 'data = [', info.data?.map(row => `   ${JSON.stringify(row)}`).join(',\n'), ']'].join('\n');
+		};
+	</script>
+</body>
+</html>

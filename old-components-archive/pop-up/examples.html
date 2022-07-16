@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pop-up Custom Element</title>
+	<script src="pop-up.js"></script>
+	<style>
+		pop-up.styled {
+			--content-color: inherit;
+			--content-background: inherit;
+			--content-border: 1px solid grey;
+			--content-padding: 1em 2em;
+		}
+		button {
+			padding: 1em 2em;
+			margin: 1em;
+		}
+	</style>
+</head>
+<body>
+	Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa, quo!
+	<p id="btnCntr"></p>
+
+	<pop-up open>
+		Close this popup by:
+		<ul>
+			<li>Clicking the close button</li>
+			<li>Clicking outside the message area</li>
+			<li>Presseing ESC key on keyboard</li>
+		</ul>
+	</pop-up>
+
+	<pop-up noeasyclose>
+		Clicking outside the message are will <b>not</b> close this popup.
+		<br />
+		Close this popup by:
+		<ul>
+			<li>Clicking the close button</li>
+			<li>Presseing ESC key on keyboard</li>
+		</ul>
+	</pop-up>
+
+	<pop-up class="styled">
+		This popup has been custom styled.
+	</pop-up>
+
+	<pop-up id="ask">
+		This pop-up confirms before opening and closing.
+	</pop-up>
+
+	<script>
+		let popups = document.querySelectorAll('pop-up');
+		let btnCntr = document.querySelector('#btnCntr');
+		let i = 0;
+		for(let p of popups) {
+			let btn = document.createElement('button');
+			btn.innerHTML = `Open Popup #${++i}`;
+			btn.onclick = e => p.open();
+			btnCntr.appendChild(btn);
+
+			p.addEventListener('show', ({detail}) => console.log('Popup', detail, 'opened'));
+			p.addEventListener('hide', ({detail}) => console.log('Popup', detail, 'closed'));
+		}
+
+		let p = document.querySelector('#ask');
+		p.beforeOpen = (popup) => {
+			// Must return bool
+			return confirm("Do you want to open this popup?");
+		};
+		p.beforeClose = (popup) => {
+			// Must return bool
+			return confirm("Do you want to close this popup?");
+		};
+
+	</script>
+</body>
+</html>

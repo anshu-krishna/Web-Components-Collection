@@ -1,0 +1,53 @@
+<style>
+	* { box-sizing: border-box; padding: 0; margin: 0; }
+	:host {
+		--row-size: 1;
+		--row-count: 1;
+		display: block;
+	}
+	main {
+		display: grid;
+		grid-template-columns: min-content 1fr;
+		grid-template-rows: 1fr;
+		gap: 0.5em;
+	}
+	header {
+		padding: var(--text-padding);
+		box-shadow: var(--box-shadow);
+		background: var(--head-background);
+		color: var(--head-color);
+		writing-mode: vertical-lr;
+		writing-mode: sideways-lr;
+		text-orientation: mixed;
+		text-align: center;
+		font-weight: bold;
+	}
+	section {
+		display: grid;
+		gap: 0.3em;
+		grid-template-columns: max-content repeat(var(--row-count), min-content);
+		/* grid-template-columns: repeat(calc(var(--row-count) + 1), minmax(max-content, 1fr)); */
+		grid-template-rows: repeat(var(--row-size), min-content);
+		grid-auto-flow: column;
+		justify-content: center;
+		max-height: var(--max-preview-height);
+		overflow-y: auto;
+		overflow-x: auto;
+	}
+	div {
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		padding: var(--text-padding);
+		box-shadow: var(--box-shadow);
+		background: var(--background);
+		color: var(--color);
+	}
+	div.head {
+		background: var(--head-background);
+		color: var(--head-color);
+	}
+	div[data-row-ty="odd"][data-col-ty="odd"], div[data-row-ty="even"][data-col-ty="even"] {
+		background: var(--alt-background);
+	}
+</style><main><header>Preview</header><section></section></main>

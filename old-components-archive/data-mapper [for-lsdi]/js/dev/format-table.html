@@ -1,0 +1,36 @@
+<style>
+	* { box-sizing: border-box; padding: 0; margin: 0; }
+	:host {
+		display: grid;
+		grid-template-columns: min-content 1fr;
+		gap: 0.3em;
+	}
+	header {
+		padding: var(--text-padding);
+		box-shadow: var(--box-shadow);
+		background: var(--head-background);
+		color: var(--head-color);
+		writing-mode: vertical-lr;
+		writing-mode: sideways-lr;
+		text-orientation: mixed;
+		text-align: center;
+		font-weight: bold;
+	}
+	main {
+		display: grid;
+		grid-template-columns: min-content 1fr;
+		gap: 0.3em;
+	}
+	main > div {
+		display: grid;
+		align-items: center;
+		justify-content: center;
+		box-shadow: var(--box-shadow);
+		padding: var(--text-padding);
+		background: var(--head-background);
+		color: var(--head-color);
+	}
+	main > format-editor.alt {
+		--background: var(--alt-background);
+	}
+</style><header>Define Format</header><main></main>

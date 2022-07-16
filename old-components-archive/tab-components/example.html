@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Tab-Components Example</title>
+	<script src="tab-component.js"></script>
+	<link rel="stylesheet" href="tab-component-example.css">
+</head>
+
+<body>
+	<tab-container>
+		<tab-headers selected="1">
+			<header>One</header>
+			<header>Two</header>
+			<header>Three</header>
+		</tab-headers>
+		<tab-sections>
+			<section>
+				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, magnam voluptatum eum sed sit deleniti architecto?
+				Possimus vel nam atque quae ipsam tenetur a, reprehenderit, quod asperiores, harum pariatur? Itaque dicta nihil
+				ratione, sapiente magnam sequi assumenda perferendis maiores molestias vel totam. Et explicabo voluptate similique
+				cum aliquam, in ea.
+			</section>
+			<section>
+				Uneasy barton seeing remark happen his has. Am possible offering at contempt mr distance stronger an. Attachment
+				excellence announcing or reasonable am on if indulgence. Exeter talked in agreed spirit no he unable do. Betrayed
+				shutters in vicinity it unpacked in. In so impossible appearance considered mr. Mrs him left find are good.
+
+				Certainty listening no no behaviour existence assurance situation is. Because add why not esteems amiable him.
+				Interested the unaffected mrs law friendship add principles. Indeed on people do merits to. Court heard which up
+				above hoped grave do. Answer living law things either sir bed length. Looked before we an on merely. These no death
+				he at share alone. Yet outward the him compass hearted are tedious.
+			</section>
+			<section>
+				Had strictly mrs handsome mistaken cheerful. We it so if resolution invitation remarkably unpleasant conviction. As
+				into ye then form. To easy five less if rose were. Now set offended own out required entirely. Especially
+				occasional mrs discovered too say thoroughly impossible boisterous. My head when real no he high rich at with.
+				After so power of young as. Bore year does has get long fat cold saw neat. Put boy carried chiefly shy general.
+
+				Unpleasant astonished an diminution up partiality. Noisy an their of meant. Death means up civil do an offer wound
+				of. Called square an in afraid direct. Resolution diminution conviction so mr at unpleasing simplicity no. No it as
+				breakfast up conveying earnestly immediate principle. Him son disposed produced humoured overcame she bachelor
+				improved. Studied however out wishing but inhabit fortune windows.
+
+				Maids table how learn drift but purse stand yet set. Music me house could among oh as their. Piqued our sister shy
+				nature almost his wicket. Hand dear so we hour to. He we be hastily offence effects he service. Sympathize it
+				projection ye insipidity celebrated my pianoforte indulgence. Point his truth put style. Elegance exercise as
+				laughing proposal mistaken if. We up precaution an it solicitude acceptance invitation.
+			</section>
+		</tab-sections>
+	</tab-container>
+	<hr />
+	<tab-container>
+		<tab-headers>
+			<header>1</header>
+			<header>2</header>
+			<header>3</header>
+			<header>4</header>
+		</tab-headers>
+		<tab-sections>
+			<section>One</section>
+			<section>Two</section>
+			<section>Three</section>
+			<section>Four</section>
+		</tab-sections>
+	</tab-container>
+
+	<tab-container>
+		<tab-headers selected="4">
+			<header>A</header>
+			<header>B</header>
+			<header>C</header>
+			<header>D</header>
+			<header>E</header>
+		</tab-headers>
+		<tab-sections>
+			<section>Apple</section>
+			<section>Ball</section>
+			<section>Cat</section>
+			<section>Dog</section>
+			<section>Elephant</section>
+		</tab-sections>
+	</tab-container>
+
+	<script>
+		for (let cntr of document.querySelectorAll('tab-container')) {
+			cntr.addEventListener('change', function (e) {
+				console.log('Selected tab', e.detail, 'in', this);
+			});
+		}
+	</script>
+</body>
+
+</html>

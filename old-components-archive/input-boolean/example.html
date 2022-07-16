@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Input Boolean</title>
+	<script src="input-boolean.js"></script>
+	<style>
+		svg {
+			fill: currentColor;
+			height: 1em;
+			width: auto;
+		}
+		#modified {
+			color: blue;
+			font-size: 5em;
+			--button-radius: 0.25em;
+		}
+	</style>
+</head>
+<body>
+	<p>
+		<input-boolean></input-boolean>
+	</p>
+
+	<input-boolean true></input-boolean>
+
+	<p>
+		<input-boolean>
+			<span slot="false-opt">False</span>
+			<span slot="true-opt">True</span>
+		</input-boolean>
+	</p>
+	
+	<p>
+		<input-boolean>
+			<span slot="false-opt"></span>
+			<span slot="true-opt"></span>
+		</input-boolean>
+	</p>
+	
+	<p>
+		<input-boolean id="modified">
+			<span slot="false-opt">
+				<svg height="24" viewBox="0 0 24 24" width="24"><path d="M23.2 17H0.8c-0.4 0-0.7 0.4-0.7 0.8v3.4C0 21.7 0.3 22 0.8 22h22.5c0.4 0 0.8-0.3 0.8-0.8V17.8C24 17.4 23.7 17 23.2 17zM23.2 9H0.8C0.3 9 0 9.4 0 9.8v3.4c0 0.4 0.3 0.8 0.8 0.8h22.5c0.4 0 0.8-0.3 0.8-0.8V9.8C24 9.4 23.7 9 23.2 9zM23.2 1H0.8C0.3 1 0 1.4 0 1.8V5.2c0 0.4 0.3 0.8 0.8 0.8h22.5c0.4 0 0.8-0.3 0.8-0.8V1.8C24 1.4 23.7 1 23.2 1z"/></svg>
+			</span>
+			<span slot="true-opt">
+				<svg viewBox="0 0 341.3 341.3"><rect x="128" y="128" width="85.3" height="85.3"/><rect width="85.3" height="85.3"/><rect x="128" y="256" width="85.3" height="85.3"/><rect y="128" width="85.3" height="85.3"/><rect y="256" width="85.3" height="85.3"/><rect x="256" width="85.3" height="85.3"/><rect x="128" width="85.3" height="85.3"/><rect x="256" y="128" width="85.3" height="85.3"/><rect x="256" y="256" width="85.3" height="85.3"/></svg>
+			</span>
+		</input-boolean>
+	</p>
+	
+	<script>
+		let ips = document.querySelectorAll('input-boolean');
+		for(let ip of ips) {
+			ip.addEventListener('change', (e) => {
+				console.log('Changed', ip, 'to', ip.value);
+				console.log('Detail is', e.detail);
+			});
+		}
+	</script>
+</body>
+</html>
