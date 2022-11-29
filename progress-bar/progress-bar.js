@@ -69,7 +69,7 @@ class ProgressBar extends HTMLElement {
 		if(Number.isInteger(per)) {
 			per = `${per}%`;
 		} else {
-			`${per.toFixed(1)}%`
+			per = `${per.toFixed(1)}%`
 		}
 		this.#fillNode.style.width = per;
 		this.#txtNode.innerText = per;
