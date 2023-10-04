@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>time-display example</title>
+	<script type="module" src="../time-display.js"></script>
+	<style>
+		body {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+		}
+		time-display {
+			border: 1px solid #ccc;
+			padding: 0.25rem;
+			border-radius: 0.25rem;
+		}
+		
+		/* Custom Styling Example */
+		time-display.custom::part(container) {
+			display: flex;
+			flex-direction: row-reverse;
+			gap: 0.5rem;
+		}
+		time-display.custom::part(label) {
+			font-size: 1rem;
+			color: blue;
+		}
+		time-display.custom::part(time) {
+			font-size: 1.5rem;
+			color: green
+		}
+	</style>
+</head>
+<body>
+	<time-display></time-display>
+	<time-display military></time-display>
+
+	<time-display zone="Asia/Kolkata" label="India"></time-display>
+	<time-display zone="Asia/Kolkata" label="India" military></time-display>
+	
+	<time-display zone="America/New_York" label="America"></time-display>
+	<time-display zone="America/New_York" label="America" military></time-display>
+
+	<time-display zone="jalsdljfds" label="Invalid Example"></time-display>
+	<time-display zone="jalsdljfds" label="Invalid Example" military></time-display>
+
+	<time-display class="custom" zone="Asia/Kolkata" label="India (Custom Styled)"></time-display>
+	<time-display class="custom" zone="Asia/Kolkata" label="India (Custom Styled)" military></time-display>
+</body>
+</html>

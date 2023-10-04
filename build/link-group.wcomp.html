@@ -1,0 +1,188 @@
+<template id="link-group">
+<style>
+	* {box-sizing: border-box;}
+	:host {
+		--heading-background: #121212;
+		--heading-color: #fff;
+		
+		--border: #121212;
+		--padding: 0.7em 0.9em;
+
+		--angle: 0deg;
+
+		--hover-background: linear-gradient(var(--angle), #0072 0%, #0078 100%);
+		--active-background: linear-gradient(var(--angle), #0052 0%, #0058 100%);
+		
+		display: block;
+		border-radius: 0.4em;
+		border: 1px solid var(--border);
+		background: inherit;
+		color: inherit;
+	}
+	::slotted(:not(:where(a, link-group))) {
+		display: none;
+	}
+	div {
+		border-radius: inherit;
+	}
+	header {
+		display: grid;
+		grid-template-columns: 1fr max-content;
+		gap: 2px;
+		background: var(--heading-background);
+		color: var(--heading-color);
+		border-radius: inherit;
+		& button {
+			border-radius: inherit;
+			font: inherit;
+			padding: var(--padding);
+			cursor: pointer;
+			text-align: left;
+			border: none;
+			background: #0000;
+			color: inherit;
+			&:hover {
+				background: var(--hover-background);
+			}
+			&:active {
+				background: var(--active-background);
+			}
+		}
+		& > #heading {
+			font-weight: bold;
+		}
+		& > button:last-of-type {
+			text-align: center;
+			border-left: 1px solid var(--border);
+		}
+	}
+	section {
+		display: none;
+		flex-wrap: wrap;
+		gap: 0.5em;
+		justify-content: center;
+		align-items: baseline;
+		padding: var(--padding);
+	}
+	::slotted(a) {
+		display: inline-block;
+		box-sizing: border-box;
+		padding: var(--padding);
+		text-decoration: none;
+		background: #0000;
+		color: inherit;
+		border-radius: 0.4em;
+		border: 1px solid var(--border);
+	}
+	::slotted(a:hover) {
+		background: var(--hover-background);
+	}
+	::slotted(a:active) {
+		background: var(--active-background);
+	}
+	:host([open]) {
+		& section {
+			display: flex;
+		}
+		& header {
+			border-bottom: 1px solid var(--border);
+		}
+	}
+	@media (prefers-color-scheme: light) {
+		:host {
+			--heading-background: #ededea;
+			--heading-color: #000;
+			
+			--border: #ededea;
+
+			--hover-background: linear-gradient(var(--angle), #ddf2 0%, #ddf8 100%);
+			--active-background: linear-gradient(var(--angle), #aaf2 0%, #aaf8 100%);
+		}
+	}
+
+</style>
+<div>
+	<header><button id="heading" title="Toggle list"></button><button id="openall" title="Open all links">Open All</button></header>
+	<section><slot></slot></section>
+</div>
+</template>
+
+<script type="module">
+class LinkGroup extends HTMLElement {
+	static { customElements.define('link-group', this); }
+	#nodes = {};
+	constructor() {
+		super();
+		const root = this.attachShadow({ mode: 'closed' });
+		root.appendChild(TEMPLATES.clone('#link-group'));
+
+		root.querySelector('#openall').addEventListener('click', () => {
+			for(const a of this.anchors) {
+				// console.log(a.href);
+				a.click();
+				// window.open(a.href, '_blank');
+			}
+		});
+		this.#nodes.slot = root.querySelector('slot');
+		this.#nodes.heading = root.querySelector('#heading');
+
+		this.#nodes.heading.textContent = this.heading;
+		this.#nodes.heading.addEventListener('click', () => {
+			this.open = !this.open;
+		});
+	}
+	* #extractAnchors () {
+		for(const e of this.#nodes.slot.assignedElements()) {
+			if(e.matches('a')) {
+				yield e;
+			} else if(e.matches('link-group')) {
+				yield* e.anchors;
+			}
+		}
+	}
+	get anchors() {
+		return [... this.#extractAnchors()];
+	}
+	#processLinks() {
+		for(const a of this.#nodes.slot.assignedElements()) {
+			a.setAttribute('target', '_blank');
+			a.setAttribute('rel', 'noopener noreferrer');
+		}
+	}
+	connectedCallback() {
+		this.#processLinks();
+	}
+	// disconnectedCallback() {}
+	adoptedCallback() {
+		this.#processLinks();
+	}
+
+	static get observedAttributes() {
+		return ['heading'];
+	}
+	attributeChangedCallback(attrName, oldVal, newVal) {
+		if(oldVal === newVal) { return; }
+		// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
+		switch(attrName) {
+			case 'heading':
+				this.#nodes.heading.textContent = this.heading;
+				break;
+		}
+	}
+	get heading() {
+		const h = (this.getAttribute('heading') ?? '').trim();
+		return (h.length === 0)? 'Group' : h;
+	}
+	get open() {
+		return this.hasAttribute('open');
+	}
+	set open(value) {
+		value ??= false;
+		if(value) {
+			this.setAttribute('open', '');
+		} else {
+			this.removeAttribute('open');
+		}
+	}
+}
+</script>

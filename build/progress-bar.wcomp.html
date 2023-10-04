@@ -1,0 +1,94 @@
+<template id="progress-bar">
+<style>
+	* { box-sizing: border-box; }
+	:host {
+		--bg-color: #ededef;
+		--fg-color: skyblue;
+		display: block;
+		height: 1.2em;
+	}
+	#main, #bar {
+		border: inherit;
+		border-radius: inherit;
+	}
+	#main {
+		display: grid;
+		background: var(--bg-color);
+		height: 100%;
+		position: relative;
+		
+	}
+	#main > span {
+		position: absolute;
+		align-self: center;
+		justify-self: center;
+		overflow: hidden;
+	}
+	#bar {
+		height: 100%;
+		background: var(--fg-color);
+	}
+	:host([notext]) #main > span {
+		display: none;
+	}
+</style><div id="main" part="frame"><div id="bar" part="bar"></div><span part="label">abc</span></div>
+</template>
+
+<script type="module">
+class ProgressBar extends HTMLElement {
+	static {
+		if(typeof customElements.get('progress-bar') === 'undefined') {
+			customElements.define('progress-bar', this);
+		}
+	}
+
+	#root;
+
+	constructor() {
+		super();
+		this.#root = this.attachShadow({ mode: 'closed' });
+		this.#root.appendChild(TEMPLATES.clone('#progress-bar'));
+	}
+	// connectedCallback() {}
+	// disconnectedCallback() {}
+	// adoptedCallback() {}
+
+	static get observedAttributes() {
+		return ['val', 'max'];
+	}
+	static #convertToNum(v, def = 0) {
+		v = parseFloat(v);
+		return Number.isNaN(v) ? def : v;
+	}
+	get val() {
+		return ProgressBar.#convertToNum(this.getAttribute('val'), 0);
+	}
+	set val(value) {
+		value ??= null;
+		if(value === null) {
+			this.removeAttribute('val');
+		} else {
+			this.setAttribute('val', value);
+		}
+	}
+	get max() {
+		return ProgressBar.#convertToNum(this.getAttribute('max'), 100);
+	}
+	set max(value) {
+		value ??= null;
+		if(value === null) {
+			this.removeAttribute('max');
+		} else {
+			this.setAttribute('max', value);
+		}
+	}
+	attributeChangedCallback(attrName, oldVal, newVal) {
+		if(oldVal === newVal) { return; }
+		// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
+		let per = this.val * 100 / this.max;
+		per = Math.min(100, per);
+		this.#root.querySelector('#bar').style.width = `${per}%`;
+		this.#root.querySelector('#main > span').innerText = `${per.toFixed(2)}%`;
+	}
+}
+</script>

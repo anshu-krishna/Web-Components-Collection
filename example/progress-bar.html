@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>progress-bar test</title>
+	<script type="module" src="../progress-bar.js"></script>
+	<style>
+		progress-bar {
+			/* height: 5em; */
+			/* --bg-color: red; */
+			border-radius: 1em;
+		}
+		/* progress-bar::part(label) {
+			font-size: 2em;
+		} */
+	</style>
+</head>
+<body>
+	<progress-bar val="0" max="33" ></progress-bar>
+	<script>
+		const delay = 1000;
+		const node = document.querySelector('progress-bar');
+		for(let i = 0; i<=33; i++) {
+			setTimeout(() => {
+				// node.setAttribute('val', i);
+				node.val = i;
+			}, delay * i);
+		}
+	</script>
+</body>
+</html>
