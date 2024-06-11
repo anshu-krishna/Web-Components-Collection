@@ -1,0 +1,229 @@
+<template id="searchable-select"><style>
+slot {
+	display: none;
+}
+:host {
+	display: inline-block;
+	align-self: center;
+}
+input {
+	width: 100%;
+	font: inherit;
+}
+</style><input type="search" list="list" part="input">
+<datalist id="list"></datalist>
+<slot></slot></template>
+<script type="module">
+class SearchableSelect extends HTMLElement {
+	static {
+		if(typeof customElements.get('searchable-select') === 'undefined') {
+			customElements.define('searchable-select', this);
+		}
+	}
+
+	#root;
+	#intrnl; // form internals
+	#ip;
+	#opts = [];
+
+	constructor() {
+		super();
+		this.#root = this.attachShadow({
+			mode: 'closed',
+			delegatesFocus: true,
+		});
+		this.#root.appendChild(TEMPLATES.clone('#searchable-select'));
+		
+		this.#intrnl = this.attachInternals();
+		this.#intrnl.role = 'select';
+		this.#intrnl.aria
+
+		this.#ip = this.#root.querySelector('input');
+		
+		// on input focusout
+		this.#ip.addEventListener('focusout', e => {
+			if(!this.#update()) {
+				this.#ip.value = '';
+			}
+		});
+
+		// on enter key in input
+		this.#ip.addEventListener('keydown', e => {
+			if(e.key === 'Enter') {
+				if(!this.#update()) {
+					this.#ip.value = '';
+				}
+				this.form?.requestSubmit();
+			}
+		});
+
+		for(const p of Object.keys(ElementInternals.prototype).filter(v => v.startsWith('aria'))) {
+			Object.defineProperty(this, p, { value: this.#intrnl[p] });
+		}
+
+
+		// on slot change update options and datalist
+		this.#root.querySelector('slot').addEventListener('slotchange', e => {
+			// load options
+			const nodes = e.target.assignedElements().filter(v => v.localName === 'option');
+			this.#opts = nodes.map(o => {
+				const ret = {
+					value: o.value,
+					text: o.textContent.trim(),
+				};
+				if(ret.text === '') {
+					ret.text = ret.value;
+				}
+				ret.text = `${ret.text} (${ret.value})`;
+				return ret;
+			});
+
+			// Update datalist
+			const frag = new DocumentFragment;
+			for(const o of this.#opts) {
+				frag.appendChild(new Option(o.text, o.value));
+			}
+			const list = this.#root.querySelector('datalist');
+			list.replaceChildren(frag);
+
+			// Set selected value
+			const selected = nodes.find(e => e.hasAttribute('selected'));
+			if(selected) {
+				this.#ip.value = selected.value;
+				this.#update();
+			}
+		});
+	}
+	#status() {
+		const input = this.#ip.value;
+		return this.#opts.map(v => v.value).includes(input) ? {
+			valid: true,
+			value: input
+		} : {
+			valid: false,
+			value: ''
+		};
+	}
+	#update() {
+		const status = this.#status();
+		if(status.valid) {
+			this.#intrnl.setFormValue(status.value);
+			this.#intrnl.setValidity({});
+			return true;
+		}
+
+		this.#intrnl.setFormValue('');
+		if(this.required) {
+			this.#intrnl.setValidity({
+				valueMissing: true,
+			}, 'Please fill out this field.', this.#ip);
+		}
+		return false;
+	}
+
+	get value() {
+		return this.#status().value;
+	}
+	set value(v) { this.#ip.value = v; this.#update(); }
+
+	get disabled() { return this.hasAttribute('disabled'); }
+	set disabled(v) {
+		if(v) {
+			this.setAttribute('disabled', '');
+		} else {
+			this.removeAttribute('disabled');
+		}
+	}
+
+	get required() { return this.hasAttribute('required'); }
+	set required(v) {
+		if(v) {
+			this.setAttribute('required', '');
+		} else {
+			this.removeAttribute('required');
+		}
+	}
+
+	get placeholder() { return this.getAttribute('placeholder') ?? ''; }
+	set placeholder(v) {
+		if(v === null) {
+			this.removeAttribute('placeholder');
+		} else {
+			this.setAttribute('placeholder', v);
+		}
+	}
+	
+	// LIFECYCLE
+	connectedCallback() { this.#update(); }
+	// disconnectedCallback() {}
+	adoptedCallback() { this.#update(); }
+
+	static get observedAttributes() {
+		return ['disabled', 'placeholder', 'required'];
+	}
+	attributeChangedCallback(attrName, oldVal, newVal) {
+		if(oldVal === newVal) { return; }
+		// console.log('Attr:', attrName, '; From:', oldVal, '; To:', newVal, '; In:', this);
+		switch(attrName) {
+			case 'disabled':
+				this.#ip.disabled = newVal !== null;
+				this.#intrnl.disabled = newVal !== null;
+				break;
+			case 'placeholder':
+				if(newVal === null) {
+					this.#ip.removeAttribute('placeholder');
+				} else {
+					this.#ip.setAttribute('placeholder', newVal);
+				}
+				break;
+			case 'required':
+				this.#intrnl.required = newVal !== null;
+				this.#update();
+				break;
+		}
+	}
+
+	// FORM RELATED
+	static get focusable() { return true; }
+	static get formAssociated() { return true; }
+	get shadowRoot() { return this.#intrnl.shadowRoot; }
+	get form() { return this.#intrnl.form; }
+	get states() { return this.#intrnl.states; }
+	get willValidate() { return this.#intrnl.willValidate; }
+	get validity() { return this.#intrnl.validity; }
+	get validationMessage() { return this.#intrnl.validationMessage; }
+	get labels() { return this.#intrnl.labels; }
+
+	formAssociatedCallback(form) {
+		this.#update();
+	}
+	formDisabledCallback(disabled) {
+		if(disabled || this.disabled) {
+			this.#ip.disabled = true;
+		} else {
+			this.#ip.disabled = false;
+		}
+	}
+	formResetCallback() {
+		const selected = this.#root.querySelector('slot').assignedElements().filter(o => o.matches('option[selected]')).at(0);
+		this.#ip.value = selected?.value ?? '';
+		this.#update();
+	}
+	formStateRestoreCallback(state, mode) {
+		this.#ip.value = state;
+		this.#update();
+	}
+
+	setFormValue(...args) { return this.#intrnl.setFormValue(...args); }
+	setValidity(...args) { return this.#intrnl.setValidity(...args); }
+	checkValidity() { return this.#update(); }
+	reportValidity() {
+		if(!this.checkValidity()) {
+			this.#intrnl.reportValidity();
+		}
+	}
+
+	get name() { return this.getAttribute('name'); }
+	get type() { return this.localName; }
+}
+</script>

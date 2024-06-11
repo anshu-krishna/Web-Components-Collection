@@ -10,7 +10,8 @@ const TEMPLATES = new (class {
 	}
 });
 
-TEMPLATES.add("<template id=\"time-display\"><style>:host{display:inline-block}.hide{display:none}[part=container]{grid-gap:.1rem;align-items:center;display:grid;gap:.1rem;justify-items:center;place-items:center}[part=time]{font-size:1.2rem}[part=label]{font-size:.7rem}</style><div part=\"container\"><span part=\"time\">Time</span><span part=\"label\" class=\"hide\">Label</span></div></template>");
+TEMPLATES.add("<template id=\"time-display\"><style>:host{display:inline-block}.hide{display:none}[part=container]{display:grid;gap:.1rem;place-items:center}[part=time]{font-size:1.2rem}[part=label]{font-size:.7rem}</style><div part=\"container\"><span part=\"time\">Time</span><span part=\"label\" class=\"hide\">Label</span></div></template>");
+
 
 class TimeDisplay extends HTMLElement {
 	static {

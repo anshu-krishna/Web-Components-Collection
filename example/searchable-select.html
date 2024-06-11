@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>searchable-select example</title>
+	<script type="module" src="../searchable-select.js"></script>
+	<style>
+		form {
+			margin: 0 auto;
+			padding: 1rem;
+			border: 1px solid #ccc;
+			border-radius: 0.5rem;
+			max-width: 40ch;
+			display: grid;
+			grid-template-columns: max-content 1fr;
+			gap: 0.5rem;
+			& > div {
+				grid-column: span 2;
+				justify-self: center
+			}
+			& label {
+				font-weight: bold;
+				align-self: center;
+				cursor: pointer;
+			}
+			& button {
+				padding: 0.5rem 1rem;
+				border: 1px solid #ccc;
+				border-radius: 0.25rem;
+				cursor: pointer;
+			}
+			& searchable-select {
+				&::part(input) {
+					border: 1px solid #ccc;
+					border-radius: 0.25rem;
+					padding: 0.3rem 0.5rem;
+				}
+				&:invalid {
+					&::part(input) {
+						border-color: red;
+					}
+				}
+			}
+		}
+
+	</style>
+</head>
+<body>
+	<form id="test">
+		<label for="ss-user">User:</label>
+		<searchable-select id="ss-user" name="user" placeholder="Select a user [required]" required>
+			<option value="anshu" selected>Anshu Krishna</option>
+			<option value="test1">Test User</option>
+			<option>test2</option>
+			<option value="test3"></option>
+		</searchable-select>
+		
+		<label for="ss-other">Other:</label>
+		<searchable-select id="ss-other" name="other" placeholder="[optional]">
+			<option value="abc" />
+			<option value="def" />
+			<option value="ghi" />
+		</searchable-select>
+		
+		<label for="ss-empty">Empty:</label>
+		<searchable-select id="ss-empty" name="empty" placeholder="Empty no value to choose"></searchable-select>
+		
+		<label for="ss-disabled">Disabled:</label>
+		<searchable-select id="ss-disabled" name="disabled" placeholder="Disabled" disabled>
+			<option value="abc" selected />
+		</searchable-select>
+
+		<div>
+			<button type="submit">Submit</button>
+			&nbsp;
+			<button type="reset">Reset</button>
+		</div>
+	</form>
+	<script type="module">
+		const form = document.getElementById('test');
+		form.addEventListener('submit', e => {
+			e.preventDefault();
+			// console.log({
+			// 	user: form.user.value,
+			// 	other: form.other.value
+			// });
+
+			const data = new FormData(form);
+			const obj = Object.fromEntries(data.entries());
+			console.log(obj);
+		});
+		// form.user.innerHTML = `<option value="anshu">Anshu Krishna</option><option value="test1" selected>Test User</option>`;
+		// form.other.removeAttribute('placeholder');
+		// form.requestSubmit();
+	</script>
+</body>
+</html>
