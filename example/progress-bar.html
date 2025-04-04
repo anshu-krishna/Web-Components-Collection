@@ -8,7 +8,7 @@
 		progress-bar {
 			/* height: 5em; */
 			/* --bg-color: red; */
-			border-radius: 1em;
+			border-radius: 0.3em;
 		}
 		/* progress-bar::part(label) {
 			font-size: 2em;
@@ -20,12 +20,13 @@
 	<script>
 		const delay = 1000;
 		const node = document.querySelector('progress-bar');
-		for(let i = 0; i<=33; i++) {
-			setTimeout(() => {
-				// node.setAttribute('val', i);
-				node.val = i;
-			}, delay * i);
-		}
+		setInterval(() => {
+			let val = node.val + 1;
+			if (val > node.max) {
+				val = 0;
+			}
+			node.val = val;
+		}, delay);
 	</script>
 </body>
 </html>
